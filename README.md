@@ -16,7 +16,6 @@
 
 <!-- ARCHITECTURE -->
 ## Architecture
-
 ![lambda architecture][architecture-png]
 
 <!-- FEATURES -->
@@ -40,8 +39,9 @@ module "lambda" {
   handler            = "main.lambda_handler"
   runtime            = "python3.8"
   local_package_path = "../my_lambda.zip"
+
   tags = {
-    Name = "my_lambda"
+    CostCenter = "project-1"
   }
 }
 ```
@@ -61,7 +61,7 @@ module "lambda_vpc" {
   vpc_security_group_ids = ["sg-51530134"]
 
   tags = {
-    Name = "my_lambda_vpc"
+    CostCenter = "project-1"
   }
 }
 ```
