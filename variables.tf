@@ -185,22 +185,22 @@ variable "reserved_concurrent_executions" {
 }
 
 variable "trigger_permissions" {
-  description = "tuples of principals that will have lambda-trigger permissions"
+  description = "List of principal collections that will have lambda-trigger permission."
   type = list(object(
     {
-      principal  = string # e.g. s3.amazonaws.com
-      source_arn = string # ARN of the principal
+      principal  = string # The principal who is getting trigger permission. e.g. s3.amazonaws.com
+      source_arn = string # The ARN of the specific resource within that service to grant permission to
     }
   ))
   default = null
-  validation {
-    condition = alltrue([
-        for o in var.trigger_permissions : can(regex(".amazonaws.com$", principal) && can(regex("^arn:aws:", source_arn)))
-    ])
-    error_message = "All triggers must be valid tuples of pincipals and source_arns."
-  }  
-}
 
+  validation {
+    condition = var.trigger_permissions == null ? true : alltrue([
+      for p in var.trigger_permissions : can(regex(".amazonaws.com$", p.principal) && can(regex("^arn:aws:", p.source_arn)))
+    ])
+    error_message = "Values must contain Principals, ending with '.amazonaws.com' and Source ARNs, starting with 'arn:aws'."
+  }
+}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM
