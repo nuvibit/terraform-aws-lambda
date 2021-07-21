@@ -193,6 +193,12 @@ variable "trigger_permissions" {
     }
   ))
   default = null
+  validation {
+    condition = alltrue([
+        for o in var.trigger_permissions : can(regex(".amazonaws.com$", principal) && can(regex("^arn:aws:", source_arn)))
+    ])
+    error_message = "All triggers must be valid tuples of pincipals and source_arns."
+  }  
 }
 
 
