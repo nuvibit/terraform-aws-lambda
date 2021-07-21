@@ -153,7 +153,7 @@ data "aws_iam_policy_document" "lambda" {
 resource "aws_iam_role" "lambda" {
   name                 = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
   assume_role_policy   = data.aws_iam_policy_document.lambda.json   
-  permissions_boundary = var.iam_execution_role_permissions_boundry_arn
+  permissions_boundary = var.iam_execution_role_permissions_boundary_arn
   tags                 = var.resource_tags
 }
 
