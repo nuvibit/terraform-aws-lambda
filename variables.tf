@@ -188,7 +188,7 @@ variable "trigger_permissions" {
   description = "List of principal collections that will have lambda-trigger permission."
   type = list(object(
     {
-      principal  = string # The principal who is getting trigger permission. e.g. s3.amazonaws.com
+      principal  = string # The principal who is getting trigger permission. e.g. s3.amazonaws.com, any valid AWS service principal or an AWS account ID.
       source_arn = string # The ARN of the specific resource within that service to grant permission to. Set to 'any' to grant permission to any resource in principal.
     }
   ))
@@ -196,9 +196,9 @@ variable "trigger_permissions" {
 
   validation {
     condition = var.trigger_permissions == null ? true : alltrue([
-      for p in var.trigger_permissions : can(regex(".amazonaws.com$", p.principal) && can(regex("^arn:aws:|^any$", p.source_arn)))
+      for p in var.trigger_permissions : can(regex(".amazonaws.com$|^\\d{12}$", p.principal) && can(regex("^arn:aws:|^any$", p.source_arn)))
     ])
-    error_message = "Values must contain Principals, ending with '.amazonaws.com' and Source ARNs, starting with 'arn:aws' or matching exactly 'any'."
+    error_message = "Values must contain Principals, ending with '.amazonaws.com' or matching exactly 12 digits and Source ARNs, starting with 'arn:aws' or matching exactly 'any'."
   }
 }
 
