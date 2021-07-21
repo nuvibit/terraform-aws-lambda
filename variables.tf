@@ -184,6 +184,18 @@ variable "reserved_concurrent_executions" {
   }
 }
 
+variable "trigger_permissions" {
+  description = "tuples of principals that will have lambda-trigger permissions"
+  type = list(object(
+    {
+      principal  = string # e.g. s3.amazonaws.com
+      source_arn = string # ARN of the principal
+    }
+  ))
+  default = null
+}
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM
 # ---------------------------------------------------------------------------------------------------------------------

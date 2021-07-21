@@ -120,6 +120,19 @@ resource "aws_lambda_function" "this" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# ¦ LAMBDA TRIGGERS
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_lambda_permission" "allowed_triggers" {
+  for_each = toset(var.trigger_permissions)
+  
+  statement_id  = format("AllowedTrigger%s", each.value)
+  action        = "lambda:InvokeFunction"
+  function_name = aws_lambda_function.this.arn
+  principal     = index(var.trigger_permissions, each.value).principal
+  source_arn    = index(var.trigger_permissions, each.value).source_arn
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM EXECUTE
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_iam_policy_document" "lambda" {
@@ -162,7 +175,7 @@ data "aws_iam_policy_document" "logs" {
     ]
     resources = [
       format(
-        "arn:aws:logs:%s:%s:log-group:%s:*",
+        "arn:aws:logs:%s:%s:log-group:%s:*)",
         data.aws_region.current.name,
         data.aws_caller_identity.current.account_id,
         aws_cloudwatch_log_group.lambda.name
