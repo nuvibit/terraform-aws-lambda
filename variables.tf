@@ -211,6 +211,12 @@ variable "iam_execution_role_name" {
   default     = null
 }
 
+variable "iam_execution_role_permissions_boundry_arn" {
+  description = "arn of the optional permission boundry for the execution role."
+  type        = string
+  default     = null
+}
+
 variable "iam_execution_policy_arns" {
   description = "List of additional execution policy statement ARNs to attach to IAM Lambda execution role."
   type        = list(string)
