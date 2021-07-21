@@ -125,7 +125,7 @@ resource "aws_lambda_function" "this" {
 resource "aws_lambda_permission" "allowed_triggers" {
   for_each = toset(var.trigger_permissions)
 
-  statement_id  = format("AllowedTrigger%s", each.value)
+  statement_id  = format("AllowExecutionFrom%", upper(split(".", index(var.trigger_permissions, each.value).principal)[0]))
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.this.arn
   principal     = index(var.trigger_permissions, each.value).principal
