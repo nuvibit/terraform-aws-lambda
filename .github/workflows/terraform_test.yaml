@@ -69,7 +69,7 @@ jobs:
         run: |
           for d in */
           do
-            sed -i 's/"%%PROVIDER_VERSION%%"/"${{ matrix.aws_version_operator }} ${{ matrix.aws_version }}"/g' "$d/main.tf"
+            sed -i 's/^\(\s+version\s+=\s*"\).*\("\s*\)$/\1${{ matrix.aws_version_operator }} ${{ matrix.aws_version }}\2"/g' "$d/main.tf"
           done
 
       - name: Run Terratest

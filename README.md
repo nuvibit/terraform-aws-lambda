@@ -16,7 +16,6 @@
 
 <!-- ARCHITECTURE -->
 ## Architecture
-
 ![lambda architecture][architecture-png]
 
 <!-- FEATURES -->
@@ -40,8 +39,9 @@ module "lambda" {
   handler            = "main.lambda_handler"
   runtime            = "python3.8"
   local_package_path = "../my_lambda.zip"
+
   tags = {
-    Name = "my_lambda"
+    CostCenter = "project-1"
   }
 }
 ```
@@ -61,7 +61,7 @@ module "lambda_vpc" {
   vpc_security_group_ids = ["sg-51530134"]
 
   tags = {
-    Name = "my_lambda_vpc"
+    CostCenter = "project-1"
   }
 }
 ```
@@ -72,7 +72,7 @@ module "lambda_vpc" {
 * [`examples/lambda`][lambda-test-url]
 * [`examples/lambda-vpc`][lambda-vpc-test-url]
 
-<!-- BEGIN_TF_DOCS -->
+<!--- BEGIN_TF_DOCS --->
 ## Requirements
 
 | Name | Version |
@@ -159,7 +159,8 @@ No modules.
 | <a name="output_lambda_schedule_cloudwatch_event_rule_arn"></a> [lambda\_schedule\_cloudwatch\_event\_rule\_arn](#output\_lambda\_schedule\_cloudwatch\_event\_rule\_arn) | The Amazon Resource Name (ARN) of the lambda scheduling rule. |
 | <a name="output_lambda_schedule_cloudwatch_event_rule_id"></a> [lambda\_schedule\_cloudwatch\_event\_rule\_id](#output\_lambda\_schedule\_cloudwatch\_event\_rule\_id) | The name of the lambda scheduling rule. |
 | <a name="output_lambda_version"></a> [lambda\_version](#output\_lambda\_version) | Latest published version of your Lambda Function. |
-<!-- END_TF_DOCS -->
+
+<!--- END_TF_DOCS --->
 
 <!-- AUTHORS -->
 ## Authors
