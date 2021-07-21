@@ -189,16 +189,16 @@ variable "trigger_permissions" {
   type = list(object(
     {
       principal  = string # The principal who is getting trigger permission. e.g. s3.amazonaws.com
-      source_arn = string # The ARN of the specific resource within that service to grant permission to
+      source_arn = string # The ARN of the specific resource within that service to grant permission to. Set to 'any' to grant permission to any resource in principal.
     }
   ))
   default = null
 
   validation {
     condition = var.trigger_permissions == null ? true : alltrue([
-      for p in var.trigger_permissions : can(regex(".amazonaws.com$", p.principal) && can(regex("^arn:aws:", p.source_arn)))
+      for p in var.trigger_permissions : can(regex(".amazonaws.com$", p.principal) && can(regex("^arn:aws:|^any$", p.source_arn)))
     ])
-    error_message = "Values must contain Principals, ending with '.amazonaws.com' and Source ARNs, starting with 'arn:aws'."
+    error_message = "Values must contain Principals, ending with '.amazonaws.com' and Source ARNs, starting with 'arn:aws' or matching exactly 'any'."
   }
 }
 

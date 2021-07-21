@@ -124,12 +124,13 @@ resource "aws_lambda_function" "this" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lambda_permission" "allowed_triggers" {
   for_each = toset(var.trigger_permissions)
-  
+
   statement_id  = format("AllowedTrigger%s", each.value)
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.this.arn
   principal     = index(var.trigger_permissions, each.value).principal
-  source_arn    = index(var.trigger_permissions, each.value).source_arn
+  # omit source_arn when 'any' to grant permission to any resource in principal
+  source_arn    = index(var.trigger_permissions, each.value).source_arn == "any" ? null : index(var.trigger_permissions, each.value).source_arn
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
