@@ -52,9 +52,11 @@ locals {
   event_patterns = [
     jsonencode(
       {
-        "detail-type" : [
-          "AWS Console Sign In via CloudTrail"
-        ]
+        "source" : ["aws.ec2"],
+        "detail-type" : ["EC2 Instance State-change Notification"],
+        "detail" : {
+          "state" : ["terminated"]
+        }
       }
     )
   ]
