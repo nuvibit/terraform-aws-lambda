@@ -6,7 +6,34 @@ on:
       - master
 
 jobs:
-  terraform-check:
+  terraform-fmt:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+        with:
+          ref: ${{ github.event.pull_request.head.ref }}
+
+      - name: Terraform Format
+        uses: dflook/terraform-fmt@v1
+        with:
+          path: ./
+
+      - name: Commit files
+        run: |
+          git config --local user.name "github-actions"
+          git config --local user.email "noreply@nuvibit.com"
+          git diff-index --quiet HEAD || git commit -m "style(terraform fmt): [BOT] terraform fmt [skip ci]" -a
+          
+      - name: Push changes
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.event.pull_request.head.ref }}
+
+  terraform-docs:
+    needs: terraform-fmt
     runs-on: ubuntu-latest
 
     steps:
@@ -15,13 +42,20 @@ jobs:
         with:
           ref: ${{ github.event.pull_request.head.ref }}
 
-      - name: Terraform Format Check
-        uses: dflook/terraform-fmt-check@v1
+      - name: Terraform Docs
+        uses: terraform-docs/gh-actions@v0.8.0
         with:
-          path: ./
+          working-dir: .
+          output-file: README.md
+          output-method: inject
+          args: --sort-by-required
+          git-push: true
+          git-push-user-name: "github-actions"
+          git-push-user-email: "noreply@nuvibit.com"
+          git-commit-message: "docs(terraform-docs): [BOT] update README [skip ci]"
 
-  terratest:
-    needs: terraform-check
+  terraform-test:
+    needs: terraform-docs
     runs-on: ubuntu-latest
     env: 
       AWS_ACCESS_KEY: ${{ secrets.TERRATEST_AWS_ACCESS_KEY}}
@@ -86,7 +120,7 @@ jobs:
             **/report.xml
 
   publish-results:
-    needs: terratest
+    needs: terraform-test
     runs-on: ubuntu-latest
     if: success() || failure()
 
