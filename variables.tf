@@ -192,10 +192,10 @@ variable "trigger_permissions" {
       source_arn = string # The ARN of the specific resource within that service to grant permission to. Set to 'any' to grant permission to any resource in principal.
     }
   ))
-  default = null
+  default = []
 
   validation {
-    condition = var.trigger_permissions == null ? true : alltrue([
+    condition = var.trigger_permissions == [] ? true : alltrue([
       for p in var.trigger_permissions : can(regex(".amazonaws.com$|^\\d{12}$", p.principal) && can(regex("^arn:aws:|^any$", p.source_arn)))
     ])
     error_message = "Values must contain Principals, ending with '.amazonaws.com' or matching exactly 12 digits and Source ARNs, starting with 'arn:aws' or matching exactly 'any'."
