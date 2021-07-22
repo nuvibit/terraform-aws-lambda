@@ -123,14 +123,16 @@ resource "aws_lambda_function" "this" {
 # ¦ LAMBDA TRIGGERS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lambda_permission" "allowed_triggers" {
-  for_each = toset(var.trigger_permissions)
+  for_each = {
+    for k, v in var.trigger_permissions : k => v
+  }
 
-  statement_id  = format("AllowExecutionFrom%", upper(split(".", index(var.trigger_permissions, each.value).principal)[0]))
+  statement_id  = format("AllowExecutionFrom%", upper(split(".", each.value.principal)[0]))
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.this.arn
-  principal     = index(var.trigger_permissions, each.value).principal
+  principal     = each.value.principal
   # omit source_arn when 'any' to grant permission to any resource in principal
-  source_arn    = index(var.trigger_permissions, each.value).source_arn == "any" ? null : index(var.trigger_permissions, each.value).source_arn
+  source_arn = each.value.source_arn == "any" ? null : each.value.source_arn
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -152,7 +154,7 @@ data "aws_iam_policy_document" "lambda" {
 
 resource "aws_iam_role" "lambda" {
   name                 = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
-  assume_role_policy   = data.aws_iam_policy_document.lambda.json   
+  assume_role_policy   = data.aws_iam_policy_document.lambda.json
   permissions_boundary = var.iam_execution_role_permissions_boundary_arn
   tags                 = var.resource_tags
 }

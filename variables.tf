@@ -185,7 +185,7 @@ variable "reserved_concurrent_executions" {
 }
 
 variable "trigger_permissions" {
-  description = "List of principal collections that will have lambda-trigger permission."
+  description = "Tuple of principals to grant lambda-trigger permission."
   type = list(object(
     {
       principal  = string # The principal who is getting trigger permission. e.g. s3.amazonaws.com, any valid AWS service principal or an AWS account ID.
