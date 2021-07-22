@@ -180,7 +180,7 @@ data "aws_iam_policy_document" "logs" {
     ]
     resources = [
       format(
-        "arn:aws:logs:%s:%s:log-group:%s:*)",
+        "arn:aws:logs:%s:%s:log-group:%s:*",
         data.aws_region.current.name,
         data.aws_caller_identity.current.account_id,
         aws_cloudwatch_log_group.lambda.name
