@@ -38,7 +38,7 @@ variable "layers" {
     condition = var.layers == null ? true : alltrue([
       for arn in var.layers : can(regex("^arn:aws:lambda", arn))
     ]) && length(var.layers) < 6
-    error_message = "Values must contain ARN of maximum 5 lambda-layers, starting with 'arn:aws:lambda'."
+    error_message = "Values must contain ARN of maximum 5 lambda-layers, starting with \"arn:aws:lambda\"."
   }
 }
 
@@ -55,7 +55,7 @@ variable "package_type" {
 
   validation {
     condition     = contains(["Zip"], var.package_type)
-    error_message = "Value must be 'Zip'."
+    error_message = "Value must be \"Zip\"."
   }
 }
 
@@ -144,7 +144,7 @@ variable "tracing_mode" {
 
   validation {
     condition     = var.tracing_mode == null ? true : contains(["PassThrough", "Active"], var.tracing_mode)
-    error_message = "Value must be 'PassThrough' or 'Active'."
+    error_message = "Value must be \"PassThrough\" or \"Active\"."
   }
 }
 
@@ -155,7 +155,7 @@ variable "file_system_config_arn" {
 
   validation {
     condition     = var.file_system_config_arn == null ? true : can(regex("^arn:aws:elasticfilesystem", var.file_system_config_arn))
-    error_message = "Value must contain ARN, starting with 'arn:aws:elasticfilesystem'."
+    error_message = "Value must contain ARN, starting with \"arn:aws:elasticfilesystem\"."
   }
 }
 
@@ -166,7 +166,7 @@ variable "file_system_config_local_mount_path" {
 
   validation {
     condition     = var.file_system_config_local_mount_path == null ? true : can(regex("^\\/mnt\\/", var.file_system_config_local_mount_path))
-    error_message = "Value must start with /mnt/."
+    error_message = "Value must start with \"/mnt/\"."
   }
 }
 
@@ -198,7 +198,7 @@ variable "trigger_permissions" {
     condition = var.trigger_permissions == [] ? true : alltrue([
       for p in var.trigger_permissions : can(regex(".amazonaws.com$|^\\d{12}$", p.principal) && can(regex("^arn:aws:|^any$", p.source_arn)))
     ])
-    error_message = "Values must contain Principals, ending with '.amazonaws.com' or matching exactly 12 digits and Source ARNs, starting with 'arn:aws' or matching exactly 'any'."
+    error_message = "Values must contain Principals, ending with \".amazonaws.com\" or matching exactly 12 digits and Source ARNs, starting with \"arn:aws\" or matching exactly \"any\"."
   }
 }
 
@@ -231,7 +231,7 @@ variable "iam_execution_policy_arns" {
     condition = var.iam_execution_policy_arns == [] ? true : alltrue([
       for arn in var.iam_execution_policy_arns : can(regex("^arn:aws:iam", arn))
     ])
-    error_message = "Values must contain ARN, starting with 'arn:aws:iam'."
+    error_message = "Values must contain ARN, starting with \"arn:aws:iam\"."
   }
 }
 
@@ -285,4 +285,15 @@ variable "event_patterns" {
   description = "A List of event patterns described as JSON objects."
   type        = list(string)
   default     = []
+
+  validation {
+    condition = var.event_patterns == [] ? true : alltrue([
+      for pattern in var.event_patterns : (
+        can(jsondecode(pattern)) ?
+        can(jsondecode(pattern).source) :
+        false
+      )
+    ])
+    error_message = "Values must be valid JSON and have \"source\" field set."
+  }
 }
