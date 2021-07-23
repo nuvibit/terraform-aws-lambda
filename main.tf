@@ -168,9 +168,21 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM LOGS
+# ¦ CLOUDWATCH LOGS
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_iam_policy_document" "logs" {
+resource "aws_cloudwatch_log_group" "lambda_logs" {
+  name              = local.loggroup_name
+  retention_in_days = var.log_retention_in_days
+  kms_key_id        = var.log_kms_key_arn
+  tags              = var.resource_tags
+}
+
+resource "aws_iam_role_policy" "lambda_logs" {
+  role   = aws_iam_role.lambda_execution.name
+  policy = data.aws_iam_policy_document.lambda_logs.json
+}
+
+data "aws_iam_policy_document" "lambda_logs" {
   statement {
     sid    = "LogToCloudWatch"
     effect = "Allow"
@@ -183,31 +195,10 @@ data "aws_iam_policy_document" "logs" {
         "arn:aws:logs:%s:%s:log-group:%s:*",
         data.aws_region.current.name,
         data.aws_caller_identity.current.account_id,
-        aws_cloudwatch_log_group.lambda.name
+        aws_cloudwatch_log_group.lambda_logs.name
       )
     ]
   }
-}
-
-resource "aws_iam_policy" "logs" {
-  name   = local.log_policy_name
-  policy = data.aws_iam_policy_document.logs.json
-  tags   = var.resource_tags
-}
-
-resource "aws_iam_role_policy_attachment" "logs" {
-  role       = aws_iam_role.lambda.name
-  policy_arn = aws_iam_policy.logs.arn
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ CLOUDWATCH LOGS
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_cloudwatch_log_group" "lambda" {
-  name              = local.loggroup_name
-  retention_in_days = var.log_retention_in_days
-  kms_key_id        = var.log_kms_key_arn
-  tags              = var.resource_tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
