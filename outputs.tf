@@ -45,7 +45,7 @@ output "lambda_execution_role_arn" {
 
 output "lambda_cloudwatch_log_group_arn" {
   description = "The Amazon Resource Name (ARN) specifying the lambda log group."
-  value       = aws_cloudwatch_log_group.lambda.arn
+  value       = aws_cloudwatch_log_group.lambda_logs.arn
 }
 
 output "lambda_schedule_cloudwatch_event_rule_id" {
