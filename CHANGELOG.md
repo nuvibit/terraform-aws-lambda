@@ -1,3 +1,10 @@
+## [1.1.3](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.2...1.1.3) (2021-07-23)
+
+
+### Bug Fixes
+
+* changing log group policy to inline policy for better compatibility ([#6](https://github.com/nuvibit/terraform-aws-lambda/issues/6)) ([01bc15f](https://github.com/nuvibit/terraform-aws-lambda/commit/01bc15f892ec08e95c171a55a069c5997aa43e3e))
+
 ## [1.1.2](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.1...1.1.2) (2021-07-23)
 
 
