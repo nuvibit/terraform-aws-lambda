@@ -107,7 +107,7 @@ resource "aws_lambda_function" "this" {
 
   dynamic "environment" {
     # add environment when environment_variables are defined
-    for_each = var.environment_variables == {} ? [] : [true]
+    for_each = length(keys(var.environment_variables)) == 0 ? [] : [true]
     content {
       variables = var.environment_variables
     }
