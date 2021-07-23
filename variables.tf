@@ -196,7 +196,7 @@ variable "trigger_permissions" {
 
   validation {
     condition = var.trigger_permissions == [] ? true : alltrue([
-      for p in var.trigger_permissions : can(regex(".amazonaws.com$|^\\d{12}$", p.principal) && can(regex("^arn:aws:|^any$", p.source_arn)))
+      for p in var.trigger_permissions : can(regex(".amazonaws.com$|^\\d{12}$", p.principal)) && can(regex("^arn:aws:|^any$", p.source_arn))
     ])
     error_message = "Values must contain Principals, ending with \".amazonaws.com\" or matching exactly 12 digits and Source ARNs, starting with \"arn:aws\" or matching exactly \"any\"."
   }
