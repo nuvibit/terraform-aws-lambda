@@ -178,7 +178,7 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 }
 
 resource "aws_iam_role_policy" "lambda_logs" {
-  role   = aws_iam_role.lambda_execution.name
+  role   = aws_iam_role.lambda.name
   policy = data.aws_iam_policy_document.lambda_logs.json
 }
 
