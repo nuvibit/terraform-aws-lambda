@@ -1,3 +1,10 @@
+## [1.1.2](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.1...1.1.2) (2021-07-23)
+
+
+### Bug Fixes
+
+* error in format ([#5](https://github.com/nuvibit/terraform-aws-lambda/issues/5)) ([c28ba75](https://github.com/nuvibit/terraform-aws-lambda/commit/c28ba75e68d31d15c74e251dd4f950217e4c0d8c))
+
 ## [1.1.1](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.0...1.1.1) (2021-07-23)
 
 
