@@ -67,3 +67,13 @@ output "lambda_pattern_cloudwatch_event_rule_arns" {
   description = "The Amazon Resource Name (ARN) of the lambda pattern rule."
   value       = var.event_patterns != [] ? [for k, v in aws_cloudwatch_event_rule.pattern : v.arn] : []
 }
+
+output "kms_key_arn" {
+  value       = var.encryption == true ? aws_kms_key.encryption[0].arn : null
+  description = "Amazon Resource Name (ARN) identifying the KMS Key that is used to encrypt Lambda Log Group and Environment Variables."
+}
+
+output "kms_alias_arn" {
+  value       = var.encryption == true ? aws_kms_alias.encryption[0].arn : null
+  description = "Amazon Resource Name (ARN) identifying the Alias of your KMS Key that is used to encrypt Lambda Log Group and Environment Variables."
+}

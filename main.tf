@@ -59,7 +59,7 @@ locals {
   )
 
   kms_alias = format(
-    "alias/%s_log_encryption_key%s",
+    "alias/%s_encryption_key%s",
     lower(var.function_name),
     lower(local.suffix_k)
   )
@@ -88,6 +88,7 @@ resource "aws_lambda_function" "this" {
   source_code_hash               = filebase64sha256(var.local_package_path)
   reserved_concurrent_executions = var.reserved_concurrent_executions
   publish                        = var.publish
+  kms_key_arn                    = var.encryption == true ? aws_kms_alias.encryption[0].arn : null
   tags                           = var.resource_tags
 
   dynamic "vpc_config" {
@@ -185,7 +186,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = local.loggroup_name
   retention_in_days = var.log_retention_in_days
-  kms_key_id        = var.encryption == true ? aws_kms_alias.log_encryption[0].arn : null
+  kms_key_id        = var.encryption == true ? aws_kms_alias.encryption[0].arn : null
   tags              = var.resource_tags
 }
 
@@ -274,23 +275,23 @@ resource "aws_cloudwatch_event_target" "pattern" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ KMS ENCRYPTION
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_kms_key" "log_encryption" {
+resource "aws_kms_key" "encryption" {
   count               = var.encryption == true ? 1 : 0
   description         = local.kms_key_description
   enable_key_rotation = true
-  policy              = data.aws_iam_policy_document.log_encryption.json
+  policy              = data.aws_iam_policy_document.encryption.json
   tags                = var.resource_tags
 }
 
-resource "aws_kms_alias" "log_encryption" {
+resource "aws_kms_alias" "encryption" {
   count         = var.encryption == true ? 1 : 0
   name          = local.kms_alias
-  target_key_id = aws_kms_key.log_encryption[0].key_id
+  target_key_id = aws_kms_key.encryption[0].key_id
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ KMS ENCRYPTION POLICY
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_iam_policy_document" "log_encryption" {
+data "aws_iam_policy_document" "encryption" {
 
 }
