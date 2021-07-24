@@ -25,6 +25,12 @@
 * Creates a CloudWatch Log Group for Lambda logs
 * Optionally creates a CloudWatch Event Rule (for scheduling)
 
+<!-- ENCRYPTION -->
+## Encryption
+Encryption is enabled by default and the following resources will be encrypted with KMS
+
+* CloudWatch Log Group for Lambda Logs
+
 <!-- USAGE -->
 ## Usage
 
@@ -184,9 +190,9 @@ See [LICENSE][license-url] for full details
 <!-- MARKDOWN LINKS & IMAGES -->
 [nuvibit-shield]: https://img.shields.io/badge/maintained%20by-nuvibit.com-%235849a6.svg?style=flat&color=1c83ba
 [nuvibit-url]: https://nuvibit.com
-[terraform-version-shield]: https://img.shields.io/badge/tf-%3E%3D0.15.0-blue.svg?style=flat&color=blueviolet
+[terraform-version-shield]: https://img.shields.io/badge/terraform-%3E%3D0.15.0-blue.svg?style=flat&color=blueviolet
 [terraform-version-url]: https://www.terraform.io/upgrade-guides/0-15.html
-[release-shield]: https://img.shields.io/github/v/release/nuvibit/terraform-aws-lambda?style=flat&color=success
+[release-shield]: https://img.shields.io/github/v/release/nuvibit/terraform-aws-lambda?color=3fb950&label=latest
 [architecture-png]: https://github.com/nuvibit/terraform-aws-lambda/blob/master/docs/architecture.png?raw=true
 [release-url]: https://github.com/nuvibit/terraform-aws-lambda/releases
 [contributors-url]: https://github.com/nuvibit/terraform-aws-lambda/graphs/contributors
