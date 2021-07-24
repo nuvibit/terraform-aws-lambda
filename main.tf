@@ -57,6 +57,18 @@ locals {
     lower(var.function_name),
     lower(local.suffix_k)
   )
+
+  kms_alias = format(
+    "alias/%s_log_encryption_key%s",
+    lower(var.function_name),
+    lower(local.suffix_k)
+  )
+
+  kms_key_description = format(
+    "Encryption key for CloudWatch Log Group %s%s",
+    lower(var.function_name),
+    lower(local.suffix_k)
+  )
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -173,7 +185,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = local.loggroup_name
   retention_in_days = var.log_retention_in_days
-  kms_key_id        = var.log_kms_key_arn
+  kms_key_id        = var.encryption == true ? aws_kms_alias.log_encryption[0].arn : null
   tags              = var.resource_tags
 }
 
@@ -257,4 +269,28 @@ resource "aws_cloudwatch_event_target" "pattern" {
   target_id = "attach_schedule_to_lambda"
   rule      = aws_cloudwatch_event_rule.pattern[each.key].name
   arn       = aws_lambda_function.this.arn
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ KMS ENCRYPTION
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_kms_key" "log_encryption" {
+  count               = var.encryption == true ? 1 : 0
+  description         = local.kms_key_description
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.log_encryption.json
+  tags                = var.resource_tags
+}
+
+resource "aws_kms_alias" "log_encryption" {
+  count         = var.encryption == true ? 1 : 0
+  name          = local.kms_alias
+  target_key_id = aws_kms_key.log_encryption[0].key_id
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ KMS ENCRYPTION POLICY
+# ---------------------------------------------------------------------------------------------------------------------
+data "aws_iam_policy_document" "log_encryption" {
+
 }
