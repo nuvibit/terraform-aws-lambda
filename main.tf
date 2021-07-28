@@ -323,7 +323,7 @@ data "aws_iam_policy_document" "lambda_encryption" {
         "events.amazonaws.com"
       ]
     }
-    actions   = [
+    actions = [
       "kms:GenerateDataKey*",
       "kms:Decrypt"
     ]
