@@ -91,7 +91,7 @@ resource "aws_lambda_function" "this" {
   tags                           = var.resource_tags
   kms_key_arn = (
     # add kms encryption for env vars when encryption is enabled and env vars are defined
-    var.lambda_encryption == true && length(keys(var.environment_variables)) > 0 ? aws_kms_alias.lambda_encryption[0].arn : null
+    var.encryption == true && length(keys(var.environment_variables)) > 0 ? aws_kms_alias.lambda_encryption[0].arn : null
   )
 
   dynamic "vpc_config" {
@@ -189,7 +189,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = local.loggroup_name
   retention_in_days = var.log_retention_in_days
-  kms_key_id        = var.lambda_encryption == true ? aws_kms_alias.lambda_encryption[0].arn : null
+  kms_key_id        = var.encryption == true ? aws_kms_alias.lambda_encryption[0].arn : null
   tags              = var.resource_tags
 }
 
@@ -279,7 +279,7 @@ resource "aws_cloudwatch_event_target" "pattern" {
 # ¦ KMS ENCRYPTION
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_key" "lambda_encryption" {
-  count               = var.lambda_encryption == true ? 1 : 0
+  count               = var.encryption == true ? 1 : 0
   description         = local.kms_key_description
   enable_key_rotation = true
   policy              = data.aws_iam_policy_document.lambda_encryption.json
@@ -287,7 +287,7 @@ resource "aws_kms_key" "lambda_encryption" {
 }
 
 resource "aws_kms_alias" "lambda_encryption" {
-  count         = var.lambda_encryption == true ? 1 : 0
+  count         = var.encryption == true ? 1 : 0
   name          = local.kms_alias
   target_key_id = aws_kms_key.lambda_encryption[0].key_id
 }
