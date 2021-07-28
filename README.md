@@ -29,7 +29,8 @@
 ## Encryption
 Encryption is enabled by default and the following resources will be encrypted with KMS
 
-* CloudWatch Log Group for Lambda Logs
+* Lambda environment variables
+* CloudWatch Log Group for Lambda logs
 
 <!-- USAGE -->
 ## Usage
