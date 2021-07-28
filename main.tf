@@ -355,8 +355,6 @@ data "aws_iam_policy_document" "lambda_encryption" {
     actions = [
       "kms:Decrypt*"
     ]
-    resources = [
-      aws_kms_key.lambda_encryption.arn
-    ]
+    resources = ["*"]
   }
 }
