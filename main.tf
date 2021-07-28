@@ -28,6 +28,11 @@ locals {
   suffix_k = local.suffix == "" ? "" : format("-%s", local.suffix) // Kebap
   suffix_s = local.suffix == "" ? "" : format("_%s", local.suffix) // Snake
 
+  this_account = format(
+    "arn:aws:iam::%s:root",
+    data.aws_caller_identity.current.account_id
+  )
+
   lambda_name = format(
     "%s%s",
     lower(var.function_name),
@@ -157,7 +162,7 @@ resource "aws_lambda_permission" "allowed_triggers" {
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_iam_policy_document" "lambda" {
   statement {
-    sid    = "TrustPolicy"
+    sid    = "AllowLambdaExecute"
     effect = "Allow"
     principals {
       type        = "Service"
@@ -297,9 +302,19 @@ resource "aws_kms_alias" "lambda_encryption" {
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_iam_policy_document" "lambda_encryption" {
   statement {
-    sid     = "AllowLambdaAndCloudwatchService"
-    actions = ["kms:*"]
-    effect  = "Allow"
+    sid    = "AllowIamUserPermissions"
+    effect = "Allow"
+    principals {
+      type        = "AWS"
+      identifiers = [local.this_account]
+    }
+    actions   = ["kms:*"]
+    resources = ["*"]
+  }
+
+  statement {
+    sid    = "AllowLambdaAndCloudwatchService"
+    effect = "Allow"
     principals {
       type = "Service"
       identifiers = [
@@ -308,6 +323,10 @@ data "aws_iam_policy_document" "lambda_encryption" {
         "events.amazonaws.com"
       ]
     }
+    actions   = [
+      "kms:GenerateDataKey*",
+      "kms:Decrypt"
+    ]
     resources = ["*"]
   }
 }
