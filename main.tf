@@ -297,35 +297,17 @@ resource "aws_kms_alias" "lambda_encryption" {
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_iam_policy_document" "lambda_encryption" {
   statement {
-    sid     = "AllowLambdaService"
+    sid     = "AllowLambdaAndCloudwatchService"
     actions = ["kms:*"]
     effect  = "Allow"
     principals {
       type = "Service"
       identifiers = [
-        "lambda.amazonaws.com"
-      ]
-    }
-    resources = [
-      aws_cloudwatch_log_group.lambda_logs.arn,
-      aws_lambda_function.this.arn
-    ]
-  }
-
-  statement {
-    sid     = "AllowCloudwatchService"
-    actions = ["kms:*"]
-    effect  = "Allow"
-    principals {
-      type = "Service"
-      identifiers = [
+        "lambda.amazonaws.com",
         "logs.amazonaws.com",
         "events.amazonaws.com"
       ]
     }
-    resources = [
-      aws_cloudwatch_log_group.lambda_logs.arn,
-      aws_lambda_function.this.arn
-    ]
+    resources = ["*"]
   }
 }
