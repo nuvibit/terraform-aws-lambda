@@ -313,20 +313,50 @@ data "aws_iam_policy_document" "lambda_encryption" {
   }
 
   statement {
-    sid    = "AllowLambdaAndCloudwatchService"
+    sid    = "AllowCloudwatchService"
     effect = "Allow"
     principals {
       type = "Service"
       identifiers = [
-        "lambda.amazonaws.com",
-        "logs.amazonaws.com",
-        "events.amazonaws.com"
+        format("logs.%s.amazonaws.com", data.aws_region.current.name)
       ]
     }
     actions = [
+      "kms:Encrypt*",
+      "kms:Decrypt*",
+      "kms:ReEncrypt*",
       "kms:GenerateDataKey*",
-      "kms:Decrypt"
+      "kms:Describe*"
     ]
     resources = ["*"]
+    condition {
+      test     = "ArnEquals"
+      variable = "kms:EncryptionContext:aws:logs:arn"
+      values = [
+        format(
+          "arn:aws:logs:%s:%s-id:log-group:%s",
+          data.aws_region.current.name,
+          data.aws_caller_identity.current.account_id,
+          local.loggroup_name
+        )
+      ]
+    }
+  }
+
+  statement {
+    sid    = "AllowLambdaRole"
+    effect = "Allow"
+    principals {
+      type = "AWS"
+      identifiers = [
+        aws_iam_role.lambda.arn
+      ]
+    }
+    actions = [
+      "kms:Decrypt*"
+    ]
+    resources = [
+      aws_kms_key.lambda_encryption.arn
+    ]
   }
 }
