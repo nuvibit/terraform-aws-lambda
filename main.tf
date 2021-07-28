@@ -88,8 +88,11 @@ resource "aws_lambda_function" "this" {
   source_code_hash               = filebase64sha256(var.local_package_path)
   reserved_concurrent_executions = var.reserved_concurrent_executions
   publish                        = var.publish
-  kms_key_arn                    = var.lambda_encryption == true ? aws_kms_alias.lambda_encryption[0].arn : null
   tags                           = var.resource_tags
+  kms_key_arn = (
+    # add kms encryption for env vars when encryption is enabled and env vars are defined
+    var.lambda_encryption == true && length(keys(var.environment_variables)) > 0 ? aws_kms_alias.lambda_encryption[0].arn : null
+  )
 
   dynamic "vpc_config" {
     # add vpc_config when vpc_subnet_ids and vpc_security_group_ids are defined
