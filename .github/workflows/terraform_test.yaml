@@ -48,7 +48,7 @@ jobs:
           working-dir: .
           output-file: README.md
           output-method: inject
-          args: --sort-by-required
+          args: --sort-by required
           git-push: true
           git-push-user-name: "github-actions"
           git-push-user-email: "noreply@nuvibit.com"
