@@ -128,7 +128,7 @@ resource "aws_lambda_permission" "allowed_triggers" {
   }
 
   # extract service_name from principal to append to statement_id e.g. s3.amazonaws.com = AllowExecutionFromS3
-  statement_id  = format("AllowExecution%02d", each.key)
+  statement_id  = format("AllowExecutionFrom%s", upper(split(".", each.value.principal)[0]))
   action        = "lambda:InvokeFunction"
   function_name = aws_lambda_function.this.arn
   principal     = each.value.principal
