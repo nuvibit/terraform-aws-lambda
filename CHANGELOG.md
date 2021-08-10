@@ -1,3 +1,11 @@
+## [1.1.4](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.3...1.1.4) (2021-08-10)
+
+
+### Bug Fixes
+
+* renaming statement id to allow multiple equal principals ([#8](https://github.com/nuvibit/terraform-aws-lambda/issues/8)) ([9144f3e](https://github.com/nuvibit/terraform-aws-lambda/commit/9144f3e07c15af20c440e3378d613dc3b129b6f8))
+* revert commit directly to master branch [skip ci] ([79f96d5](https://github.com/nuvibit/terraform-aws-lambda/commit/79f96d576b94624856d36b1fd5696f1ee235f50e))
+
 ## [1.1.3](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.2...1.1.3) (2021-07-23)
 
 
