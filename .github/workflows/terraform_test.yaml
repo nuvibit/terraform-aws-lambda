@@ -3,7 +3,7 @@ name: TERRAFORM TEST
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   terraform-fmt:

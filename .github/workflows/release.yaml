@@ -3,7 +3,7 @@ name: RELEASE
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   release:
@@ -27,7 +27,7 @@ jobs:
         with:
           access-token: ${{ secrets.GH_SA_TOKEN_RO }}
           enforce_admins: false
-          branch: master
+          branch: main
 
       - name: Release
         env:
@@ -40,4 +40,4 @@ jobs:
         with:
           access-token: ${{ secrets.GH_SA_TOKEN_RO }}
           enforce_admins: true
-          branch: master
+          branch: main
