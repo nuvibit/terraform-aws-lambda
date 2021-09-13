@@ -1,4 +1,4 @@
-name: TERRAFORM TEST
+name: TERRAFORM MODULE
 
 on:
   pull_request:
