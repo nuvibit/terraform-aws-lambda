@@ -202,11 +202,21 @@ variable "trigger_permissions" {
   }
 }
 
+
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM
+# ¦ IAM - EXECUTION ROLE PROVIDED
+# ---------------------------------------------------------------------------------------------------------------------
+variable "iam_execution_role_arn" {
+  description = "In case the IAM execution role is already given you can provide the ARN here. If provided, var.iam_execution_role_name may not be provided."
+  type        = string
+  default     = null
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ IAM - NO EXECUTION ROLE PROVIDED
 # ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_role_name" {
-  description = "Friendly name of the lambda execution role. If omitted, will be generated with function name."
+  description = "Friendly name of the lambda execution role. If provided, var.iam_execution_role_arn no IAM role fill be created. If not and var.iam_execution_role_name is not provided, IAM role be generated with function name."
   type        = string
   default     = null
 }
@@ -222,6 +232,9 @@ variable "iam_execution_role_permissions_boundary_arn" {
   }
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ IAM - BOTH
+# ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_policy_arns" {
   description = "List of additional execution policy statement ARNs to attach to IAM Lambda execution role."
   type        = list(string)

@@ -34,11 +34,15 @@ locals {
     lower(local.suffix_k)
   )
 
-  execution_role_name = format(
+  execution_role_name_concat = format(
     "%s_execution_role%s",
     var.function_name,
     local.suffix_k,
   )
+  // arn:aws:iam::626708301729:role/nuvibit_siem_configure_sender_execution_role
+  execution_role_name = var.iam_execution_role_arn == null ? (var.iam_execution_role_name == null ? local.execution_role_name_concat : var.iam_execution_role_name) : replace(split(":", var.iam_execution_role_arn)[5], "role/", "")
+
+  execution_role_arn = var.iam_execution_role_arn == null ? aws_iam_role.lambda_execution[0].arn : var.iam_execution_role_arn
 
   log_policy_name = format(
     "%s_log_policy%s",
@@ -69,7 +73,7 @@ resource "aws_lambda_function" "this" {
   package_type                   = var.package_type
   layers                         = var.layers
   handler                        = var.handler
-  role                           = aws_iam_role.lambda.arn
+  role                           = local.execution_role_arn
   memory_size                    = var.memory_size
   runtime                        = var.runtime
   timeout                        = var.timeout
@@ -114,8 +118,7 @@ resource "aws_lambda_function" "this" {
   }
 
   depends_on = [
-    aws_cloudwatch_log_group.lambda_logs,
-    aws_iam_role_policy_attachment.lambda
+    aws_cloudwatch_log_group.lambda_logs
   ]
 }
 
@@ -136,9 +139,19 @@ resource "aws_lambda_permission" "allowed_triggers" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM EXECUTE
+# ¦ IAM LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_iam_policy_document" "lambda" {
+resource "aws_iam_role" "lambda_execution" {
+  count = var.iam_execution_role_arn != null ? 0 : 1
+
+  name                 = local.execution_role_name
+  assume_role_policy   = data.aws_iam_policy_document.lambda_execution[0].json
+  permissions_boundary = var.iam_execution_role_permissions_boundary_arn
+  tags                 = var.resource_tags
+}
+
+data "aws_iam_policy_document" "lambda_execution" {
+  count = var.iam_execution_role_arn != null ? 0 : 1
   statement {
     sid    = "TrustPolicy"
     effect = "Allow"
@@ -152,17 +165,10 @@ data "aws_iam_policy_document" "lambda" {
   }
 }
 
-resource "aws_iam_role" "lambda" {
-  name                 = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
-  assume_role_policy   = data.aws_iam_policy_document.lambda.json
-  permissions_boundary = var.iam_execution_role_permissions_boundary_arn
-  tags                 = var.resource_tags
-}
-
-resource "aws_iam_role_policy_attachment" "lambda" {
+resource "aws_iam_role_policy_attachment" "lambda_execution" {
   count = length(var.iam_execution_policy_arns)
 
-  role       = aws_iam_role.lambda.name
+  role       = local.execution_role_name
   policy_arn = var.iam_execution_policy_arns[count.index]
 }
 
@@ -177,7 +183,7 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 }
 
 resource "aws_iam_role_policy" "lambda_logs" {
-  role   = aws_iam_role.lambda.name
+  role   = local.execution_role_name
   policy = data.aws_iam_policy_document.lambda_logs.json
 }
 

@@ -23,24 +23,19 @@ output "lambda_invoke_arn" {
   value       = aws_lambda_function.this.invoke_arn
 }
 
-output "lambda_execution_role_id" {
-  description = "Name of the lambda execution role."
-  value       = aws_iam_role.lambda.id
-}
-
-output "lambda_execution_role_unique_id" {
-  description = "Stable and unique string identifying the lambda execution role."
-  value       = aws_iam_role.lambda.unique_id
-}
-
 output "lambda_execution_role_name" {
   description = "Name of the lambda execution role."
-  value       = aws_iam_role.lambda.name
+  value       = local.execution_role_name
 }
 
 output "lambda_execution_role_arn" {
   description = "Amazon Resource Name (ARN) specifying the lambda execution role."
-  value       = aws_iam_role.lambda.arn
+  value       = local.execution_role_arn
+}
+
+output "lambda_execution_role_unique_id" {
+  description = "Stable and unique string identifying the lambda execution role."
+  value       = var.iam_execution_role_arn == null ? aws_iam_role.lambda_execution[0].unique_id : ""
 }
 
 output "lambda_cloudwatch_log_group_arn" {
