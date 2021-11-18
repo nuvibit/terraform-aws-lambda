@@ -119,12 +119,7 @@ resource "aws_lambda_function" "this" {
 
   depends_on = [
     aws_cloudwatch_log_group.lambda_logs,
-    dynamic "iam_execution_role" {
-      for_each =  var.iam_execution_role_arn == null ? [] : [true]
-      content {
-        aws_iam_role.lambda_execution
-      }
-    }
+    aws_iam_role.lambda_execution
   ]
 }
 
