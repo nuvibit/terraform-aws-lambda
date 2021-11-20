@@ -45,10 +45,14 @@ No modules.
 
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
+| <a name="input_create_execution_role"></a> [create\_execution\_role](#input\_create\_execution\_role) | Controls if IAM execution role resources should be created. | `bool` | `true` | no |
 | <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
+| <a name="input_iam_execution_role_external_arn"></a> [iam\_execution\_role\_external\_arn](#input\_iam\_execution\_role\_external\_arn) | ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created. | `string` | `null` | no |
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. | `string` | n/a | yes |
 | <a name="input_iam_execution_role_permissions_boundary_arn"></a> [iam\_execution\_role\_permissions\_boundary\_arn](#input\_iam\_execution\_role\_permissions\_boundary\_arn) | ARN of the policy that is used to set the permissions boundary for the role. | `string` | `null` | no |
 | <a name="input_lambda_loggroup_name"></a> [lambda\_loggroup\_name](#input\_lambda\_loggroup\_name) | Name of cloudwatch loggroup for lambda logging | `string` | `"*"` | no |
+| <a name="input_resource_name_suffix"></a> [resource\_name\_suffix](#input\_resource\_name\_suffix) | Alphanumeric suffix for all the resource names in this module. | `string` | `""` | no |
+| <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | A map of tags to assign to the resources in this module. | `map(string)` | `{}` | no |
 
 ## Outputs
 
