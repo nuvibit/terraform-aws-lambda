@@ -142,7 +142,7 @@ module "execution_role" {
   source = "./modules/execution-role"
 
   # if an external iam execution role is provided this module will not create any resources and return the external execution role arn
-  create_execution_role           = iam_execution_role_external_arn == null ? true : false
+  create_execution_role           = var.iam_execution_role_external_arn == null ? true : false
   iam_execution_role_external_arn = var.iam_execution_role_external_arn
 
   iam_execution_role_name                     = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
