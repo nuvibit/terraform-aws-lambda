@@ -42,7 +42,7 @@ locals {
   // arn:aws:iam::626708301729:role/nuvibit_siem_configure_sender_execution_role
   execution_role_name = var.iam_execution_role_arn == null ? (var.iam_execution_role_name == null ? local.execution_role_name_concat : var.iam_execution_role_name) : replace(split(":", var.iam_execution_role_arn)[5], "role/", "")
 
-  execution_role_arn = var.iam_execution_role_arn == null ? aws_iam_role.lambda_execution[0].arn : var.iam_execution_role_arn
+  execution_role_arn = var.iam_execution_role_arn == null ? aws_iam_role.lambda_execution.arn : var.iam_execution_role_arn
 
   log_policy_name = format(
     "%s_log_policy%s",
@@ -146,7 +146,7 @@ resource "aws_iam_role" "lambda_execution" {
   count = var.iam_execution_role_arn != null ? 0 : 1
 
   name                 = local.execution_role_name
-  assume_role_policy   = data.aws_iam_policy_document.lambda_execution[0].json
+  assume_role_policy   = data.aws_iam_policy_document.lambda_execution.json
   permissions_boundary = var.iam_execution_role_permissions_boundary_arn
   tags                 = var.resource_tags
 }
