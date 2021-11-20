@@ -208,7 +208,7 @@ variable "trigger_permissions" {
 variable "iam_execution_role_external_arn" {
   description = "ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created."
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "iam_execution_role_name" {
