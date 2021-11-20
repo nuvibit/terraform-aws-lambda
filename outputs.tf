@@ -35,7 +35,7 @@ output "lambda_execution_role_arn" {
 
 output "lambda_execution_role_unique_id" {
   description = "Stable and unique string identifying the lambda execution role."
-  value       = var.iam_execution_role_arn == null ? aws_iam_role.lambda_execution[0].unique_id : ""
+  value       = var.iam_execution_role_arn == "" ? aws_iam_role.lambda_execution[0].unique_id : ""
 }
 
 output "lambda_cloudwatch_log_group_arn" {

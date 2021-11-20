@@ -209,7 +209,7 @@ variable "trigger_permissions" {
 variable "iam_execution_role_arn" {
   description = "In case the IAM execution role is already given you can provide the ARN here. If provided, var.iam_execution_role_name may not be provided."
   type        = string
-  default     = null
+  default     = ""
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
