@@ -152,7 +152,6 @@ resource "aws_iam_role" "lambda_execution" {
 }
 
 data "aws_iam_policy_document" "lambda_execution" {
-  count = var.iam_execution_role_arn != null ? 0 : 1
   statement {
     sid    = "TrustPolicy"
     effect = "Allow"
