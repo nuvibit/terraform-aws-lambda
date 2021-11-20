@@ -1,9 +1,9 @@
-name: TERRAFORM TEST
+name: TERRAFORM MODULE
 
 on:
   pull_request:
     branches:
-      - master
+      - main
 
 jobs:
   terraform-fmt:
@@ -43,12 +43,13 @@ jobs:
           ref: ${{ github.event.pull_request.head.ref }}
 
       - name: Terraform Docs
-        uses: terraform-docs/gh-actions@v0.8.0
+        id: docs
+        uses: terraform-docs/gh-actions@v0.10.0
         with:
           working-dir: .
           output-file: README.md
           output-method: inject
-          args: --sort-by-required
+          args: --sort-by required
           git-push: true
           git-push-user-name: "github-actions"
           git-push-user-email: "noreply@nuvibit.com"

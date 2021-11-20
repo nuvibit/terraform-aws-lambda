@@ -104,8 +104,8 @@ variable "runtime" {
       "nodejs8.10", "nodejs10.x", "nodejs12.x",
       "nodejs14.x", "java8", "java8.al2",
       "java11", "python2.7", "python3.6",
-      "python3.7", "python3.8", "dotnetcore1.0",
-      "dotnetcore2.0", "dotnetcore2.1",
+      "python3.7", "python3.8", "python3.9",
+      "dotnetcore1.0", "dotnetcore2.0", "dotnetcore2.1",
       "dotnetcore3.1", "nodejs4.3-edge", "go1.x",
       "ruby2.5", "ruby2.7", "provided", "provided.al2"
     ], var.runtime)
@@ -205,6 +205,24 @@ variable "trigger_permissions" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM
 # ---------------------------------------------------------------------------------------------------------------------
+variable "create_execution_role" {
+  description = "Controls if IAM execution role should be created. If set to false an iam execute role ARN for 'iam_execution_role_external_arn' needs to be provided."
+  type        = bool
+  default     = true
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ IAM - EXECUTION ROLE PROVIDED
+# ---------------------------------------------------------------------------------------------------------------------
+variable "iam_execution_role_external_arn" {
+  description = "ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created."
+  type        = string
+  default     = ""
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ IAM - NO EXECUTION ROLE PROVIDED
+# ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_role_name" {
   description = "Friendly name of the lambda execution role. If omitted, will be generated with function name."
   type        = string
@@ -222,8 +240,11 @@ variable "iam_execution_role_permissions_boundary_arn" {
   }
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ IAM - BOTH
+# ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_policy_arns" {
-  description = "List of additional execution policy statement ARNs to attach to IAM Lambda execution role."
+  description = "List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role."
   type        = list(string)
   default     = []
 

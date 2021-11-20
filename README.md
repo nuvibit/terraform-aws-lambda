@@ -3,7 +3,7 @@
 
 <!-- LOGO -->
 <a href="https://nuvibit.com">
-    <img src="https://nuvibit.com/img/logo.png" alt="nuvibit logo" title="nuvibit" align="right" width="100" />
+    <img src="https://nuvibit.com/images/logo/logo_nuvibit_dark.png" alt="nuvibit logo" title="nuvibit" align="right" width="200" />
 </a>
 
 <!-- SHIELDS -->
@@ -22,6 +22,7 @@
 ## Features
 * Creates a Lambda Function
 * Creates IAM Execution Role for Lambda and attaches internal and provided policies
+* Optionally provide external IAM Execution Role ARN and skip creating new Execution Role
 * Creates a CloudWatch Log Group for Lambda logs
 * Optionally creates a CloudWatch Event Rule (for scheduling)
 
@@ -37,7 +38,7 @@ module "lambda" {
   function_name      = "my_lambda"
   description        = "my lambda function"
   handler            = "main.lambda_handler"
-  runtime            = "python3.8"
+  runtime            = "python3.9"
   local_package_path = "../my_lambda.zip"
 
   tags = {
@@ -55,10 +56,35 @@ module "lambda_vpc" {
   function_name          = "my_lambda_vpc"
   description            = "my lambda function in vpc"
   handler                = "main.lambda_handler"
-  runtime                = "python3.8"
+  runtime                = "python3.9"
   local_package_path     = "../my_lambda.zip"
   vpc_subnet_ids         = ["subnet-b46032ec", "subnet-a46032fc"]
   vpc_security_group_ids = ["sg-51530134"]
+
+  tags = {
+    CostCenter = "project-1"
+  }
+}
+```
+
+### Lambda Function with external IAM execute policy
+```hcl
+data "aws_iam_role" "lambda" {
+  name = "my_lambda_execute_role"
+}
+
+module "lambda_vpc" {
+  source  = "nuvibit/lambda/aws"
+  version = "~> 1.0"
+
+  create_execution_role           = false
+  iam_execution_role_external_arn = data.aws_iam_role.lambda.arn
+
+  function_name                   = "my_lambda_vpc"
+  description                     = "my lambda function in vpc"
+  handler                         = "main.lambda_handler"
+  runtime                         = "python3.9"
+  local_package_path              = "../my_lambda.zip"
 
   tags = {
     CostCenter = "project-1"
@@ -88,7 +114,9 @@ module "lambda_vpc" {
 
 ## Modules
 
-No modules.
+| Name | Source | Version |
+|------|--------|---------|
+| <a name="module_execution_role"></a> [execution\_role](#module\_execution\_role) | ./modules/execution-role | n/a |
 
 ## Resources
 
@@ -99,15 +127,12 @@ No modules.
 | [aws_cloudwatch_event_target.pattern](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_event_target.schedule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_log_group.lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
-| [aws_iam_role.lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role) | resource |
 | [aws_iam_role_policy.lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy) | resource |
-| [aws_iam_role_policy_attachment.lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/iam_role_policy_attachment) | resource |
 | [aws_lambda_function.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
 | [aws_lambda_permission.allowed_triggers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.pattern](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.schedule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
-| [aws_iam_policy_document.lambda](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_iam_policy_document.lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
@@ -116,13 +141,15 @@ No modules.
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | Unique name for your Lambda Function. | `string` | n/a | yes |
+| <a name="input_create_execution_role"></a> [create\_execution\_role](#input\_create\_execution\_role) | Controls if IAM execution role should be created. If set to false an iam execute role ARN for 'iam\_execution\_role\_external\_arn' needs to be provided. | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | Description of what your Lambda Function does. | `string` | `""` | no |
 | <a name="input_environment_variables"></a> [environment\_variables](#input\_environment\_variables) | Map of environment variables that are accessible from the function code during execution. | `map(string)` | `{}` | no |
 | <a name="input_event_patterns"></a> [event\_patterns](#input\_event\_patterns) | A List of event patterns described as JSON objects. | `list(string)` | `[]` | no |
 | <a name="input_file_system_config_arn"></a> [file\_system\_config\_arn](#input\_file\_system\_config\_arn) | Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system. | `string` | `null` | no |
 | <a name="input_file_system_config_local_mount_path"></a> [file\_system\_config\_local\_mount\_path](#input\_file\_system\_config\_local\_mount\_path) | Path where the function can access the file system, starting with /mnt/. | `string` | `null` | no |
 | <a name="input_handler"></a> [handler](#input\_handler) | Function entrypoint in your code. | `string` | `""` | no |
-| <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of additional execution policy statement ARNs to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
+| <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
+| <a name="input_iam_execution_role_external_arn"></a> [iam\_execution\_role\_external\_arn](#input\_iam\_execution\_role\_external\_arn) | ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created. | `string` | `""` | no |
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. If omitted, will be generated with function name. | `string` | `null` | no |
 | <a name="input_iam_execution_role_permissions_boundary_arn"></a> [iam\_execution\_role\_permissions\_boundary\_arn](#input\_iam\_execution\_role\_permissions\_boundary\_arn) | ARN of the policy that is used to set the permissions boundary for the role. | `string` | `null` | no |
 | <a name="input_layers"></a> [layers](#input\_layers) | List of Lambda Layer Version ARNs (maximum of 5) to attach to your Lambda Function. | `list(string)` | `null` | no |
@@ -187,13 +214,11 @@ See [LICENSE][license-url] for full details
 [terraform-version-shield]: https://img.shields.io/badge/tf-%3E%3D0.15.0-blue.svg?style=flat&color=blueviolet
 [terraform-version-url]: https://www.terraform.io/upgrade-guides/0-15.html
 [release-shield]: https://img.shields.io/github/v/release/nuvibit/terraform-aws-lambda?style=flat&color=success
-[architecture-png]: https://github.com/nuvibit/terraform-aws-lambda/blob/master/docs/architecture.png?raw=true
+[architecture-png]: https://github.com/nuvibit/terraform-aws-lambda/blob/main/docs/architecture.png?raw=true
 [release-url]: https://github.com/nuvibit/terraform-aws-lambda/releases
 [contributors-url]: https://github.com/nuvibit/terraform-aws-lambda/graphs/contributors
-[license-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/LICENSE
+[license-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/LICENSE
 [terraform-url]: https://www.terraform.io
 [aws-url]: https://aws.amazon.com
-[nuvibit-product-url]: https://nuvibit.com/products
-[lambda-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/examples/lambda
-[lambda-vpc-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/examples/lambda-vpc
-[example-sub-module-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/examples/example-resource-module
+[lambda-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/examples/lambda
+[lambda-vpc-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/examples/lambda-vpc
