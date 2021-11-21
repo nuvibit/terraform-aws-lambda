@@ -3,7 +3,7 @@
 
 <!-- LOGO -->
 <a href="https://nuvibit.com">
-    <img src="https://nuvibit.com/img/logo.png" alt="nuvibit logo" title="nuvibit" align="right" width="100" />
+    <img src="https://nuvibit.com/images/logo/logo_nuvibit_dark.png" alt="nuvibit logo" title="nuvibit" align="right" width="100" />
 </a>
 
 <!-- SHIELDS -->
@@ -22,6 +22,7 @@
 ## Features
 * Creates a Lambda Function
 * Creates IAM Execution Role for Lambda and attaches internal and provided policies
+* Optionally provide external IAM Execution Role ARN and skip creating new Execution Role
 * Creates a CloudWatch Log Group for Lambda logs
 * Optionally creates a CloudWatch Event Rule (for scheduling)
 
@@ -37,7 +38,7 @@ module "lambda" {
   function_name      = "my_lambda"
   description        = "my lambda function"
   handler            = "main.lambda_handler"
-  runtime            = "python3.8"
+  runtime            = "python3.9"
   local_package_path = "../my_lambda.zip"
 
   tags = {
@@ -55,10 +56,35 @@ module "lambda_vpc" {
   function_name          = "my_lambda_vpc"
   description            = "my lambda function in vpc"
   handler                = "main.lambda_handler"
-  runtime                = "python3.8"
+  runtime                = "python3.9"
   local_package_path     = "../my_lambda.zip"
   vpc_subnet_ids         = ["subnet-b46032ec", "subnet-a46032fc"]
   vpc_security_group_ids = ["sg-51530134"]
+
+  tags = {
+    CostCenter = "project-1"
+  }
+}
+```
+
+### Lambda Function with external IAM execute policy
+```hcl
+data "aws_iam_role" "lambda" {
+  name = "my_lambda_execute_role"
+}
+
+module "lambda_vpc" {
+  source  = "nuvibit/lambda/aws"
+  version = "~> 1.0"
+
+  create_execution_role           = false
+  iam_execution_role_external_arn = data.aws_iam_role.lambda.arn
+
+  function_name                   = "my_lambda_vpc"
+  description                     = "my lambda function in vpc"
+  handler                         = "main.lambda_handler"
+  runtime                         = "python3.9"
+  local_package_path              = "../my_lambda.zip"
 
   tags = {
     CostCenter = "project-1"
@@ -187,13 +213,11 @@ See [LICENSE][license-url] for full details
 [terraform-version-shield]: https://img.shields.io/badge/tf-%3E%3D0.15.0-blue.svg?style=flat&color=blueviolet
 [terraform-version-url]: https://www.terraform.io/upgrade-guides/0-15.html
 [release-shield]: https://img.shields.io/github/v/release/nuvibit/terraform-aws-lambda?style=flat&color=success
-[architecture-png]: https://github.com/nuvibit/terraform-aws-lambda/blob/master/docs/architecture.png?raw=true
+[architecture-png]: https://github.com/nuvibit/terraform-aws-lambda/blob/main/docs/architecture.png?raw=true
 [release-url]: https://github.com/nuvibit/terraform-aws-lambda/releases
 [contributors-url]: https://github.com/nuvibit/terraform-aws-lambda/graphs/contributors
-[license-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/LICENSE
+[license-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/LICENSE
 [terraform-url]: https://www.terraform.io
 [aws-url]: https://aws.amazon.com
-[nuvibit-product-url]: https://nuvibit.com/products
-[lambda-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/examples/lambda
-[lambda-vpc-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/examples/lambda-vpc
-[example-sub-module-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/master/examples/example-resource-module
+[lambda-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/examples/lambda
+[lambda-vpc-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/examples/lambda-vpc
