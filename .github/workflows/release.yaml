@@ -3,7 +3,7 @@ name: RELEASE
 on:
   push:
     branches:
-      - master
+      - main
 
 jobs:
   release:
@@ -14,13 +14,30 @@ jobs:
         uses: actions/checkout@v2
         with:
           fetch-depth: 0
+          persist-credentials: false
 
       - name: Setup Node.js
         uses: actions/setup-node@v1
         with:
           node-version: 12
 
+      - name: Temporarily disable "include administrators" branch protection
+        uses: benjefferies/branch-protection-bot@master
+        if: always()
+        with:
+          access-token: ${{ secrets.GH_SA_TOKEN_RO }}
+          enforce_admins: false
+          branch: main
+
       - name: Release
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GITHUB_TOKEN: ${{ secrets.GH_SA_TOKEN_RO }}
         run: npx -p @semantic-release/changelog -p @semantic-release/git -p semantic-release semantic-release
+
+      - name: Enable "include administrators" branch protection
+        uses: benjefferies/branch-protection-bot@master
+        if: always()
+        with:
+          access-token: ${{ secrets.GH_SA_TOKEN_RO }}
+          enforce_admins: true
+          branch: main
