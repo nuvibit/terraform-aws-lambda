@@ -205,6 +205,12 @@ variable "trigger_permissions" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM
 # ---------------------------------------------------------------------------------------------------------------------
+variable "create_execution_role" {
+  description = "Controls if IAM execution role should be created. If set to false an iam execute role ARN for 'iam_execution_role_external_arn' needs to be provided."
+  type        = bool
+  default     = true
+}
+
 variable "iam_execution_role_external_arn" {
   description = "ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created."
   type        = string
