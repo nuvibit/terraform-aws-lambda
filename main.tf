@@ -135,6 +135,7 @@ module "execution_role" {
   iam_execution_role_name                     = var.iam_execution_role_name
   iam_execution_role_permissions_boundary_arn = var.iam_execution_role_permissions_boundary_arn
   iam_execution_policy_arns                   = var.iam_execution_policy_arns
+  lambda_loggroup_name                        = local.loggroup_name
   resource_tags                               = var.resource_tags
 }
 

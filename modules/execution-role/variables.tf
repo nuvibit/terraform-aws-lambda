@@ -64,3 +64,8 @@ variable "iam_execution_policy_arns" {
     error_message = "Values must contain ARN, starting with \"arn:aws:iam\"."
   }
 }
+
+variable "lambda_loggroup_name" {
+  description = "Name of the lambda debug CloudWatch LogGroup."
+  type        = string
+}
