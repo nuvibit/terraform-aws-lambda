@@ -77,14 +77,13 @@ module "lambda_vpc" {
   source  = "nuvibit/lambda/aws"
   version = "~> 1.0"
 
-  create_execution_role           = false
-  iam_execution_role_external_arn = data.aws_iam_role.lambda.arn
-
-  function_name                   = "my_lambda_vpc"
-  description                     = "my lambda function in vpc"
-  handler                         = "main.lambda_handler"
-  runtime                         = "python3.9"
-  local_package_path              = "../my_lambda.zip"
+  create_execution_role            = false
+  iam_execution_role_external_name = data.aws_iam_role.lambda.name
+  function_name                    = "my_lambda_vpc"
+  description                      = "my lambda function in vpc"
+  handler                          = "main.lambda_handler"
+  runtime                          = "python3.9"
+  local_package_path               = "../my_lambda.zip"
 
   tags = {
     CostCenter = "project-1"
