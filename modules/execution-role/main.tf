@@ -27,16 +27,9 @@ locals {
   execution_role_name_concat = format(
     "%s_execution_role%s",
     var.function_name,
-    local.suffix_k,
   )
 
   execution_role_name = var.create_execution_role ? (var.iam_execution_role_name == null ? local.execution_role_name_concat : var.iam_execution_role_name) : replace(split(":", var.iam_execution_role_arn)[5], "role/", "")
-
-  log_policy_name = format(
-    "%s_log_policy%s",
-    var.function_name,
-    local.suffix_k,
-  )
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
