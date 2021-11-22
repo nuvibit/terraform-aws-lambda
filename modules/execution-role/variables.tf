@@ -24,6 +24,9 @@ variable "create_execution_role" {
   default     = true
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ IAM - EXECUTION ROLE PROVIDED
+# ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_role_external_arn" {
   description = "ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created."
   type        = string
@@ -46,6 +49,9 @@ variable "iam_execution_role_permissions_boundary_arn" {
   }
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ IAM - BOTH
+# ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_policy_arns" {
   description = "List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role."
   type        = list(string)
@@ -57,10 +63,4 @@ variable "iam_execution_policy_arns" {
     ])
     error_message = "Values must contain ARN, starting with \"arn:aws:iam\"."
   }
-}
-
-variable "lambda_loggroup_name" {
-  description = "Name of cloudwatch loggroup for lambda logging"
-  type        = string
-  default     = "*"
 }

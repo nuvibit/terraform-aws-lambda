@@ -34,18 +34,6 @@ locals {
     lower(local.suffix_k)
   )
 
-  execution_role_name = format(
-    "%s_execution_role%s",
-    var.function_name,
-    local.suffix_k,
-  )
-
-  log_policy_name = format(
-    "%s_log_policy%s",
-    var.function_name,
-    local.suffix_k,
-  )
-
   loggroup_name = format(
     "/aws/lambda/%s%s",
     lower(var.function_name),
@@ -142,13 +130,11 @@ module "execution_role" {
   source = "./modules/execution-role"
 
   # if the iam execution role should not be created an external iam execution role arn is expected instead
-  create_execution_role           = var.create_execution_role
-  iam_execution_role_external_arn = var.iam_execution_role_external_arn
-
-  iam_execution_role_name                     = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
+  create_execution_role                       = var.create_execution_role
+  iam_execution_role_external_arn             = var.iam_execution_role_external_arn
+  iam_execution_role_name                     = var.iam_execution_role_name
   iam_execution_role_permissions_boundary_arn = var.iam_execution_role_permissions_boundary_arn
   iam_execution_policy_arns                   = var.iam_execution_policy_arns
-  lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
   resource_tags                               = var.resource_tags
 }
 
@@ -161,6 +147,31 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
   kms_key_id        = var.log_kms_key_arn
   tags              = var.resource_tags
 }
+
+resource "aws_iam_role_policy" "lambda_logs" {
+  role   = module.execution_role.lambda_execution_role_name
+  policy = data.aws_iam_policy_document.lambda_logs.json
+}
+
+data "aws_iam_policy_document" "lambda_logs" {
+  statement {
+    sid    = "LogToCloudWatch"
+    effect = "Allow"
+    actions = [
+      "logs:CreateLogStream",
+      "logs:PutLogEvents"
+    ]
+    resources = [
+      format(
+        "arn:aws:logs:%s:%s:log-group:%s:*",
+        data.aws_region.current.name,
+        data.aws_caller_identity.current.account_id,
+        aws_cloudwatch_log_group.lambda_logs.name
+      )
+    ]
+  }
+}
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ CLOUDWATCH SCHEDULE RULE
