@@ -15,11 +15,6 @@ variable "resource_name_suffix" {
   }
 }
 
-variable "function_name" {
-  description = "Name of the Lambda function."
-  type        = string
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
@@ -29,29 +24,8 @@ variable "create_execution_role" {
   default     = true
 }
 
-variable "iam_execution_policy_arns" {
-  description = "List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role."
-  type        = list(string)
-  default     = []
-
-  validation {
-    condition = var.iam_execution_policy_arns == [] ? true : alltrue([
-      for arn in var.iam_execution_policy_arns : can(regex("^arn:aws:iam", arn))
-    ])
-    error_message = "Values must contain ARN, starting with \"arn:aws:iam\"."
-  }
-}
-
-variable "lambda_loggroup_name" {
-  description = "Name of the lambda debug CloudWatch LogGroup."
-  type        = string
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM - EXECUTION ROLE PROVIDED
-# ---------------------------------------------------------------------------------------------------------------------
-variable "iam_execution_role_external_arn" {
-  description = "ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created."
+variable "iam_execution_role_external_name" {
+  description = "Name of an optional external IAM execution role outside this module. If create_execution_role is false, this value is required."
   type        = string
   default     = null
 }
@@ -70,4 +44,23 @@ variable "iam_execution_role_permissions_boundary_arn" {
     condition     = var.iam_execution_role_permissions_boundary_arn == null ? true : can(regex("^arn:aws:iam", var.iam_execution_role_permissions_boundary_arn))
     error_message = "Value must contain ARN, starting with 'arn:aws:iam'."
   }
+}
+
+variable "iam_execution_policy_arns" {
+  description = "List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = var.iam_execution_policy_arns == [] ? true : alltrue([
+      for arn in var.iam_execution_policy_arns : can(regex("^arn:aws:iam", arn))
+    ])
+    error_message = "Values must contain ARN, starting with \"arn:aws:iam\"."
+  }
+}
+
+variable "lambda_loggroup_name" {
+  description = "Name of cloudwatch loggroup for lambda logging"
+  type        = string
+  default     = "*"
 }

@@ -211,18 +211,12 @@ variable "create_execution_role" {
   default     = true
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM - EXECUTION ROLE PROVIDED
-# ---------------------------------------------------------------------------------------------------------------------
-variable "iam_execution_role_external_arn" {
-  description = "ARN of an optional external IAM execution role outside this module. If omitted, an execution role will be created."
+variable "iam_execution_role_external_name" {
+  description = "Name of an optional external IAM execution role outside this module. If create_execution_role is false, this value is required."
   type        = string
   default     = ""
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM - NO EXECUTION ROLE PROVIDED
-# ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_role_name" {
   description = "Friendly name of the lambda execution role. If omitted, will be generated with function name."
   type        = string
@@ -240,9 +234,6 @@ variable "iam_execution_role_permissions_boundary_arn" {
   }
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM - BOTH
-# ---------------------------------------------------------------------------------------------------------------------
 variable "iam_execution_policy_arns" {
   description = "List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role."
   type        = list(string)
