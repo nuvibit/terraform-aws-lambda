@@ -47,7 +47,12 @@ locals {
   execution_role_name = format(
     "%s_execution_role%s",
     var.function_name,
-    random_string.suffix.result,
+    random_string.suffix.result
+  )
+  execution_policy_name = format(
+    "%s_execution_policy%s",
+    var.function_name,
+    random_string.suffix.result
   )
 }
 
@@ -98,14 +103,18 @@ data "archive_file" "lambda_package" {
 # ¦ LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "lambda" {
-  name                = local.execution_role_name
-  assume_role_policy  = data.aws_iam_policy_document.list_users.json
-  managed_policy_arns = [data.aws_iam_policy.network.arn]
-  tags                = var.resource_tags
+  name               = local.execution_role_name
+  assume_role_policy = data.aws_iam_policy_document.list_users.json
+  tags               = var.resource_tags
+}
+
+resource "aws_iam_role_policy" "lambda" {
+  name   = local.execution_policy_name
+  role   = aws_iam_role.lambda.id
+  policy = data.aws_iam_policy_document.network.json
 }
 
 data "aws_iam_policy_document" "list_users" {
-  # enable IAM in logging account
   statement {
     sid       = "EnableOrganization"
     effect    = "Allow"
