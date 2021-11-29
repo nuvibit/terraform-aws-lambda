@@ -49,11 +49,6 @@ locals {
     var.function_name,
     random_string.suffix.result
   )
-  execution_policy_name = format(
-    "%s_execution_policy%s",
-    var.function_name,
-    random_string.suffix.result
-  )
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -108,10 +103,9 @@ resource "aws_iam_role" "lambda" {
   tags               = var.resource_tags
 }
 
-resource "aws_iam_role_policy" "lambda" {
-  name   = local.execution_policy_name
-  role   = aws_iam_role.lambda.id
-  policy = data.aws_iam_policy_document.network.json
+resource "aws_iam_role_policy_attachment" "lambda" {
+  role       = aws_iam_role.lambda.id
+  policy_arn = data.aws_iam_policy.network.arn
 }
 
 data "aws_iam_policy_document" "list_users" {
