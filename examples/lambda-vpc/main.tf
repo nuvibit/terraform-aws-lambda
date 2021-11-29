@@ -49,6 +49,12 @@ locals {
     var.function_name,
     random_string.suffix.result
   )
+
+  inline_policy_name = format(
+    "%s_inline_policy%s",
+    var.function_name,
+    random_string.suffix.result
+  )
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -100,7 +106,11 @@ data "archive_file" "lambda_package" {
 resource "aws_iam_role" "lambda" {
   name               = local.execution_role_name
   assume_role_policy = data.aws_iam_policy_document.lambda.json
-  tags               = var.resource_tags
+  inline_policy {
+    name   = local.inline_policy_name
+    policy = data.aws_iam_policy_document.list_users.json
+  }
+  tags = var.resource_tags
 }
 
 data "aws_iam_policy_document" "lambda" {
@@ -115,11 +125,6 @@ data "aws_iam_policy_document" "lambda" {
       "sts:AssumeRole"
     ]
   }
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_list_users" {
-  role       = aws_iam_role.lambda.id
-  policy_arn = data.aws_iam_policy.list_users.arn
 }
 
 data "aws_iam_policy_document" "list_users" {
