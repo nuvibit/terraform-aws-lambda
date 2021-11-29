@@ -117,7 +117,7 @@ data "aws_iam_policy_document" "lambda" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "lambda" {
+resource "aws_iam_role_policy_attachment" "lambda_list_users" {
   role       = aws_iam_role.lambda.id
   policy_arn = data.aws_iam_policy.list_users.arn
 }
@@ -131,7 +131,7 @@ data "aws_iam_policy_document" "list_users" {
   }
 }
 
-resource "aws_iam_role_policy_attachment" "lambda" {
+resource "aws_iam_role_policy_attachment" "lambda_network" {
   role       = aws_iam_role.lambda.id
   policy_arn = data.aws_iam_policy.network.arn
 }
