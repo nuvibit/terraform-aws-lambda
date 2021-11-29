@@ -99,13 +99,27 @@ data "archive_file" "lambda_package" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "lambda" {
   name               = local.execution_role_name
-  assume_role_policy = data.aws_iam_policy_document.list_users.json
+  assume_role_policy = data.aws_iam_policy_document.lambda.json
   tags               = var.resource_tags
+}
+
+data "aws_iam_policy_document" "lambda" {
+  statement {
+    sid    = "TrustPolicy"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    actions = [
+      "sts:AssumeRole"
+    ]
+  }
 }
 
 resource "aws_iam_role_policy_attachment" "lambda" {
   role       = aws_iam_role.lambda.id
-  policy_arn = data.aws_iam_policy.network.arn
+  policy_arn = data.aws_iam_policy.list_users.arn
 }
 
 data "aws_iam_policy_document" "list_users" {
@@ -115,6 +129,11 @@ data "aws_iam_policy_document" "list_users" {
     actions   = ["iam:ListUsers"]
     resources = ["*"]
   }
+}
+
+resource "aws_iam_role_policy_attachment" "lambda" {
+  role       = aws_iam_role.lambda.id
+  policy_arn = data.aws_iam_policy.network.arn
 }
 
 data "aws_iam_policy" "network" {
