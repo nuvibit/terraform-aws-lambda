@@ -44,10 +44,16 @@ data "aws_region" "current" {}
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  execution_policy_name = format(
-    "%s_execution_policy-%s",
+  execution_role_name = format(
+    "%s_execution_role%s",
     var.function_name,
-    random_string.suffix.result,
+    random_string.suffix.result
+  )
+
+  inline_policy_name = format(
+    "%s_inline_policy%s",
+    var.function_name,
+    random_string.suffix.result
   )
 }
 
@@ -70,22 +76,20 @@ module "lambda" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name          = var.function_name
-  description            = var.description
-  vpc_subnet_ids         = [aws_subnet.first.id, aws_subnet.second.id]
-  vpc_security_group_ids = [aws_security_group.allow_https.id]
-  local_package_path     = data.archive_file.lambda_package.output_path
-  handler                = "main.lambda_handler"
-  iam_execution_policy_arns = [
-    aws_iam_policy.list_users.arn,
-    data.aws_iam_policy.network.arn
-  ]
+  function_name                    = var.function_name
+  description                      = var.description
+  vpc_subnet_ids                   = [aws_subnet.first.id, aws_subnet.second.id]
+  vpc_security_group_ids           = [aws_security_group.allow_https.id]
+  local_package_path               = data.archive_file.lambda_package.output_path
+  handler                          = "main.lambda_handler"
+  create_execution_role            = false
+  iam_execution_role_external_name = aws_iam_role.lambda.name
   environment_variables = {
     ACCOUNT_ID = data.aws_caller_identity.current.account_id
   }
   memory_size          = 128
   timeout              = 360
-  runtime              = "python3.7"
+  runtime              = "python3.9"
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
 }
@@ -97,14 +101,33 @@ data "archive_file" "lambda_package" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ LAMBDA EXECUTION POLICIES
+# ¦ LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_policy" "list_users" {
-  name   = local.execution_policy_name
-  policy = data.aws_iam_policy_document.list_users.json
+resource "aws_iam_role" "lambda" {
+  name               = local.execution_role_name
+  assume_role_policy = data.aws_iam_policy_document.lambda.json
+  inline_policy {
+    name   = local.inline_policy_name
+    policy = data.aws_iam_policy_document.list_users.json
+  }
+  tags = var.resource_tags
 }
+
+data "aws_iam_policy_document" "lambda" {
+  statement {
+    sid    = "TrustPolicy"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    actions = [
+      "sts:AssumeRole"
+    ]
+  }
+}
+
 data "aws_iam_policy_document" "list_users" {
-  # enable IAM in logging account
   statement {
     sid       = "EnableOrganization"
     effect    = "Allow"
@@ -112,6 +135,12 @@ data "aws_iam_policy_document" "list_users" {
     resources = ["*"]
   }
 }
+
+resource "aws_iam_role_policy_attachment" "lambda_network" {
+  role       = aws_iam_role.lambda.id
+  policy_arn = data.aws_iam_policy.network.arn
+}
+
 data "aws_iam_policy" "network" {
   name = "AWSLambdaVPCAccessExecutionRole"
 }
@@ -122,14 +151,17 @@ data "aws_iam_policy" "network" {
 resource "aws_vpc" "main" {
   cidr_block = "192.168.0.0/23"
 }
+
 resource "aws_subnet" "first" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "192.168.0.0/24"
 }
+
 resource "aws_subnet" "second" {
   vpc_id     = aws_vpc.main.id
   cidr_block = "192.168.1.0/24"
 }
+
 resource "aws_security_group" "allow_https" {
   name        = "allow_https"
   description = "Allow HTTPS inbound traffic"

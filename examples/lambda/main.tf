@@ -95,10 +95,11 @@ module "lambda" {
   }
   memory_size          = 128
   timeout              = 360
-  runtime              = "python3.7"
+  runtime              = "python3.9"
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
 }
+
 data "archive_file" "lambda_package" {
   type        = "zip"
   source_dir  = "${path.module}/lambda_files"
@@ -112,6 +113,7 @@ resource "aws_iam_policy" "list_users" {
   name   = local.execution_policy_name
   policy = data.aws_iam_policy_document.list_users.json
 }
+
 data "aws_iam_policy_document" "list_users" {
   # enable IAM in logging account
   statement {
