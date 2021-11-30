@@ -69,7 +69,7 @@ resource "aws_lambda_function" "this" {
   package_type                   = var.package_type
   layers                         = var.layers
   handler                        = var.handler
-  role                           = aws_iam_role.lambda.arn
+  role                           = module.execution_role.lambda_execution_role_arn
   memory_size                    = var.memory_size
   runtime                        = var.runtime
   timeout                        = var.timeout
@@ -115,7 +115,7 @@ resource "aws_lambda_function" "this" {
 
   depends_on = [
     aws_cloudwatch_log_group.lambda_logs,
-    aws_iam_role_policy_attachment.lambda
+    module.execution_role
   ]
 }
 
@@ -136,34 +136,19 @@ resource "aws_lambda_permission" "allowed_triggers" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM EXECUTE
+# ¦ IAM EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
-data "aws_iam_policy_document" "lambda" {
-  statement {
-    sid    = "TrustPolicy"
-    effect = "Allow"
-    principals {
-      type        = "Service"
-      identifiers = ["lambda.amazonaws.com"]
-    }
-    actions = [
-      "sts:AssumeRole"
-    ]
-  }
-}
+module "execution_role" {
+  source = "./modules/execution-role"
 
-resource "aws_iam_role" "lambda" {
-  name                 = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
-  assume_role_policy   = data.aws_iam_policy_document.lambda.json
-  permissions_boundary = var.iam_execution_role_permissions_boundary_arn
-  tags                 = var.resource_tags
-}
-
-resource "aws_iam_role_policy_attachment" "lambda" {
-  count = length(var.iam_execution_policy_arns)
-
-  role       = aws_iam_role.lambda.name
-  policy_arn = var.iam_execution_policy_arns[count.index]
+  # if the iam execution role should not be created an external iam execution role arn is expected instead
+  create_execution_role                       = var.create_execution_role
+  iam_execution_role_external_name            = var.iam_execution_role_external_name
+  iam_execution_role_name                     = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
+  iam_execution_role_permissions_boundary_arn = var.iam_execution_role_permissions_boundary_arn
+  iam_execution_policy_arns                   = var.iam_execution_policy_arns
+  lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
+  resource_tags                               = var.resource_tags
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -174,30 +159,6 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
   retention_in_days = var.log_retention_in_days
   kms_key_id        = var.log_kms_key_arn
   tags              = var.resource_tags
-}
-
-resource "aws_iam_role_policy" "lambda_logs" {
-  role   = aws_iam_role.lambda.name
-  policy = data.aws_iam_policy_document.lambda_logs.json
-}
-
-data "aws_iam_policy_document" "lambda_logs" {
-  statement {
-    sid    = "LogToCloudWatch"
-    effect = "Allow"
-    actions = [
-      "logs:CreateLogStream",
-      "logs:PutLogEvents"
-    ]
-    resources = [
-      format(
-        "arn:aws:logs:%s:%s:log-group:%s:*",
-        data.aws_region.current.name,
-        data.aws_caller_identity.current.account_id,
-        aws_cloudwatch_log_group.lambda_logs.name
-      )
-    ]
-  }
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
