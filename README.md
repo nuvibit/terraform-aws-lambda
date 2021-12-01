@@ -41,7 +41,7 @@ module "lambda" {
   runtime            = "python3.9"
   local_package_path = "../my_lambda.zip"
 
-  tags = {
+  resource_tags = {
     CostCenter = "project-1"
   }
 }
@@ -61,7 +61,7 @@ module "lambda_vpc" {
   vpc_subnet_ids         = ["subnet-b46032ec", "subnet-a46032fc"]
   vpc_security_group_ids = ["sg-51530134"]
 
-  tags = {
+  resource_tags = {
     CostCenter = "project-1"
   }
 }
@@ -85,7 +85,7 @@ module "lambda_vpc" {
   runtime                          = "python3.9"
   local_package_path               = "../my_lambda.zip"
 
-  tags = {
+  resource_tags = {
     CostCenter = "project-1"
   }
 }
