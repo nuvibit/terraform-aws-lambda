@@ -1,3 +1,18 @@
+# [1.2.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.4...1.2.0) (2021-12-01)
+
+
+### Bug Fixes
+
+* **action:** fixing env var [skip ci] ([0133b24](https://github.com/nuvibit/terraform-aws-lambda/commit/0133b2484fbc2f35ba6bc8005e05b841de65679a))
+* **action:** upgrade node version ([c0852ca](https://github.com/nuvibit/terraform-aws-lambda/commit/c0852cacb31bed945bc80b0ba24cfd5c2ddf7a91))
+* **readme:** update submodule docs ([aba3c35](https://github.com/nuvibit/terraform-aws-lambda/commit/aba3c35cdc0484f14aa8d22ab91a894e8a517946))
+* **realeaserc:** migrate to main branch ([8ce9185](https://github.com/nuvibit/terraform-aws-lambda/commit/8ce918524de1e3ade8f8da7bcc4e7aab0fb8f3b2))
+
+
+### Features
+
+* adding optional external lambda execution role ([d94c6fc](https://github.com/nuvibit/terraform-aws-lambda/commit/d94c6fc88e190474fd6ff3be7dfee65390342aa2))
+
 ## [1.1.4](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.3...1.1.4) (2021-08-10)
 
 
