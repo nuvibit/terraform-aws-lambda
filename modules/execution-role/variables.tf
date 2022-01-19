@@ -1,20 +1,3 @@
-variable "resource_tags" {
-  description = "A map of tags to assign to the resources in this module."
-  type        = map(string)
-  default     = {}
-}
-
-variable "resource_name_suffix" {
-  description = "Alphanumeric suffix for all the resource names in this module."
-  type        = string
-  default     = ""
-
-  validation {
-    condition     = var.resource_name_suffix == "" ? true : can(regex("[[:alnum:]]", var.resource_name_suffix))
-    error_message = "Value must be alphanumeric."
-  }
-}
-
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
@@ -33,6 +16,12 @@ variable "iam_execution_role_external_name" {
 variable "iam_execution_role_name" {
   description = "Friendly name of the lambda execution role."
   type        = string
+}
+
+variable "iam_execution_role_path" {
+  description = "Path of the IAM role."
+  type        = string
+  default     = ""
 }
 
 variable "iam_execution_role_permissions_boundary_arn" {
@@ -63,4 +52,24 @@ variable "lambda_loggroup_name" {
   description = "Name of cloudwatch loggroup for lambda logging"
   type        = string
   default     = "*"
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ COMMON
+# ---------------------------------------------------------------------------------------------------------------------
+variable "resource_tags" {
+  description = "A map of tags to assign to the resources in this module."
+  type        = map(string)
+  default     = {}
+}
+
+variable "resource_name_suffix" {
+  description = "Alphanumeric suffix for all the resource names in this module."
+  type        = string
+  default     = ""
+
+  validation {
+    condition     = var.resource_name_suffix == "" ? true : can(regex("[[:alnum:]]", var.resource_name_suffix))
+    error_message = "Value must be alphanumeric."
+  }
 }

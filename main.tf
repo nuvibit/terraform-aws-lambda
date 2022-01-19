@@ -145,6 +145,7 @@ module "execution_role" {
   create_execution_role                       = var.create_execution_role
   iam_execution_role_external_name            = var.iam_execution_role_external_name
   iam_execution_role_name                     = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
+  iam_execution_role_path                     = var.iam_execution_role_path
   iam_execution_role_permissions_boundary_arn = var.iam_execution_role_permissions_boundary_arn
   iam_execution_policy_arns                   = var.iam_execution_policy_arns
   lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
