@@ -150,6 +150,7 @@ module "execution_role" {
   iam_execution_policy_arns                   = var.iam_execution_policy_arns
   lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
   resource_tags                               = var.resource_tags
+  resource_name_suffix                        = var.resource_name_suffix
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
