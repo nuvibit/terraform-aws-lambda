@@ -209,7 +209,7 @@ variable "iam_execution_role_name" {
 variable "iam_execution_role_path" {
   description = "Path of the IAM role."
   type        = string
-  default     = ""
+  default     = "/"
 }
 
 variable "iam_execution_role_permissions_boundary_arn" {
