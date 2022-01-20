@@ -3,7 +3,7 @@
 
 <!-- LOGO -->
 <a href="https://nuvibit.com">
-    <img src="https://nuvibit.com/images/logo/logo_nuvibit_dark.png" alt="nuvibit logo" title="nuvibit" align="right" width="200" />
+    <img src="https://nuvibit.com/images/logo/logo-nuvibit-dark.png" alt="nuvibit logo" title="nuvibit" align="right" width="200" />
 </a>
 
 <!-- SHIELDS -->
