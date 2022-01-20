@@ -31,6 +31,7 @@ resource "aws_iam_role" "lambda" {
   count = var.create_execution_role ? 1 : 0
 
   name                 = var.iam_execution_role_name
+  path                 = var.iam_execution_role_path
   assume_role_policy   = data.aws_iam_policy_document.lambda.json
   permissions_boundary = var.iam_execution_role_permissions_boundary_arn
   tags                 = var.resource_tags
