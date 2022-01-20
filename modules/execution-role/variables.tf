@@ -22,7 +22,7 @@ variable "iam_execution_role_path" {
   description = "Path of the IAM role."
   type        = string
   default     = null
-  
+
   validation {
     condition     = var.iam_execution_role_path == null ? true : can(regex("^\\/", var.iam_execution_role_path))
     error_message = "Value must start with '/'."
