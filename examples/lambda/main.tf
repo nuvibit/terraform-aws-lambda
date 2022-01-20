@@ -81,12 +81,13 @@ module "lambda" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name       = var.function_name
-  description         = var.description
-  local_package_path  = data.archive_file.lambda_package.output_path
-  handler             = "main.lambda_handler"
-  schedule_expression = "cron(0 12 * * ? *)"
-  event_patterns      = local.event_patterns
+  function_name           = var.function_name
+  description             = var.description
+  local_package_path      = data.archive_file.lambda_package.output_path
+  handler                 = "main.lambda_handler"
+  schedule_expression     = "cron(0 12 * * ? *)"
+  event_patterns          = local.event_patterns
+  iam_execution_role_path = "/lambda/"
   iam_execution_policy_arns = [
     aws_iam_policy.list_users.arn
   ]
