@@ -1,3 +1,10 @@
+# [1.3.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.2.0...1.3.0) (2022-01-20)
+
+
+### Features
+
+* **aws_iam_role:** adding path support for lambda execution role ([#13](https://github.com/nuvibit/terraform-aws-lambda/issues/13)) ([0da1b22](https://github.com/nuvibit/terraform-aws-lambda/commit/0da1b2252c54974dae823dee459334524a7b5e13))
+
 # [1.2.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.1.4...1.2.0) (2021-12-01)
 
 
