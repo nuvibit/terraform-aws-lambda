@@ -210,10 +210,10 @@ variable "iam_execution_role_path" {
   description = "Path of the IAM role."
   type        = string
   default     = null
-  
+
   validation {
-    condition     = var.iam_execution_role_path == null ? true : can(regex("^\\/", var.iam_execution_role_path))
-    error_message = "Value must start with '/'."
+    condition     = var.iam_execution_role_path == null ? true : can(regex("^(\\/|\\/.*\\/)$", var.iam_execution_role_path))
+    error_message = "Value must be \"/\" or start and end with \"/\"."
   }
 }
 
@@ -224,7 +224,7 @@ variable "iam_execution_role_permissions_boundary_arn" {
 
   validation {
     condition     = var.iam_execution_role_permissions_boundary_arn == null ? true : can(regex("^arn:aws:iam", var.iam_execution_role_permissions_boundary_arn))
-    error_message = "Value must contain ARN, starting with 'arn:aws:iam'."
+    error_message = "Value must contain ARN, starting with \"arn:aws:iam\"."
   }
 }
 
