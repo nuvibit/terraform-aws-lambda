@@ -99,7 +99,7 @@ data "aws_iam_policy_document" "lambda_trigger" {
     resources = ["*"]
   }
   statement {
-    sid = "AllowOutboundSns"
+    sid = "AllowInboundSns"
     actions = [
       "sqs:SendMessage"
     ]
