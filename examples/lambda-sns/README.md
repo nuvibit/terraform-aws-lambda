@@ -1,12 +1,13 @@
 # Lambda Function
 
-This example creates a Lambda Function with `VPC attachment`.
+This example creates a Lambda Function with a `SNS ARN as input`.
 
 ## Which resources are deployed in this example?
 
 * Lambda Function
 * IAM Policy & Role
 * Cloudwatch Log Group
+* SQS triggering Lambda subscribed to SNS 
 
 ## How do you run this example?
 
