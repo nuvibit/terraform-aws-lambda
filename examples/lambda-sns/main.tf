@@ -88,9 +88,9 @@ resource "aws_sns_topic_policy" "triggering_sns" {
 
 data "aws_iam_policy_document" "triggering_sns" {
   statement {
-    sid     = "AllowedPublishers"
-    actions = ["sns:Publish"]
-    effect  = "Allow"
+    sid       = "AllowedPublishers"
+    actions   = ["sns:Publish"]
+    effect    = "Allow"
     resources = [aws_sns_topic.triggering_sns.arn]
   }
   statement {
@@ -115,13 +115,13 @@ module "lambda" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name           = var.function_name
-  description             = var.description
-  local_package_path      = data.archive_file.lambda_package.output_path
-  handler                 = "main.lambda_handler"
+  function_name      = var.function_name
+  description        = var.description
+  local_package_path = data.archive_file.lambda_package.output_path
+  handler            = "main.lambda_handler"
   triggering_sns_arns = [
-      aws_sns_topic.triggering_sns.arn
-    ]
+    aws_sns_topic.triggering_sns.arn
+  ]
   schedule_expression     = "cron(0 12 * * ? *)"
   event_patterns          = local.event_patterns
   iam_execution_role_path = "/lambda/"
