@@ -167,17 +167,21 @@ variable "reserved_concurrent_executions" {
   }
 }
 
-variable "triggering_sns_arns" {
+variable "triggering_sns_topics" {
   description = "List of SNS ARNs for triggering the Lambda. If provided a SQS for triggering the Lambda will be added and subscribed to the SNS."
-  type = list(string # The ARN of the SNS topic that will trigger the Lambda via the created SQS.
-  )
+  type = list(object(
+    {
+      sns_arn = string # The ARN of the SNS topic that will trigger the Lambda via the created SQS.
+      filter_policy_json = string # Policy for filtering the stream to the SQS subscription to specific SNS items
+    }
+  ))
   default = []
 
   validation {
-    condition = var.triggering_sns_arns == [] ? true : alltrue([
-      for p in var.triggering_sns_arns : can(regex("^arn:aws:sns:", p))
+    condition = var.triggering_sns_topics == [] ? true : alltrue([
+      for p in var.triggering_sns_topics : can(regex("^arn:aws:sns:", p.sns_arn))
     ])
-    error_message = "Values must contain SNS ARNs, starting with \"arn:aws:sns:\"."
+    error_message = "Values must contain SNS ARN, starting with \"arn:aws:sns:\" and an optional filter_policy_json."
   }
 }
 
