@@ -111,19 +111,19 @@ data "aws_iam_policy_document" "lambda_trigger" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   =  [
+      values = [
         for item in var.triggering_sns_topics : item.sns_arn
-      ] 
+      ]
     }
   }
 }
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
-  count     = length(var.triggering_sns_topics)
-  topic_arn = element(var.triggering_sns_topics, count.index).sns_arn
-  protocol  = "sqs"
+  count         = length(var.triggering_sns_topics)
+  topic_arn     = element(var.triggering_sns_topics, count.index).sns_arn
+  protocol      = "sqs"
   filter_policy = element(var.triggering_sns_topics, count.index).filter_policy_json
-  endpoint  = aws_sqs_queue.lambda_trigger[0].arn
+  endpoint      = aws_sqs_queue.lambda_trigger[0].arn
 }
 
 resource "aws_lambda_event_source_mapping" "lambda_trigger" {
