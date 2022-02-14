@@ -103,7 +103,7 @@ resource "aws_iam_role_policy" "sqs_trigger" {
 
 data "aws_iam_policy_document" "sqs_trigger" {
   count = var.trigger_sqs_arn != "" ? 1 : 0
-  
+
   statement {
     sid    = "SqsTrigger"
     effect = "Allow"
