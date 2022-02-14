@@ -177,12 +177,13 @@ variable "triggering_sns_topics" {
   ))
   default = []
 
-  validation {
+/*  validation {
     condition = var.triggering_sns_topics == [] ? true : alltrue([
       for p in var.triggering_sns_topics : (p.sns_arn == null || can(regex("^arn:aws:sns:", p.sns_arn)))
     ])
     error_message = "Values must contain SNS ARN, starting with \"arn:aws:sns:\" and an optional filter_policy_json."
   }
+  */
 }
 
 
