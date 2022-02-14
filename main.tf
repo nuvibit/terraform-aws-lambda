@@ -28,7 +28,7 @@ locals {
   suffix_k = local.suffix == "" ? "" : format("-%s", local.suffix) // Kebap
   suffix_s = local.suffix == "" ? "" : format("_%s", local.suffix) // Snake
 
-  trigger_sqs = length(var.triggering_sns_arns) > 0 ? true : false
+  trigger_sqs = length(var.triggering_sns_topics) > 0 ? true : false
 
   trigger_sqs_name = format(
     "%s-trigger%s",
@@ -111,15 +111,18 @@ data "aws_iam_policy_document" "lambda_trigger" {
     condition {
       test     = "ArnLike"
       variable = "aws:SourceArn"
-      values   = var.triggering_sns_arns
+      values   =  [
+        for item in var.triggering_sns_topics : item.sns_arn
+      ] 
     }
   }
 }
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
-  count     = length(var.triggering_sns_arns)
-  topic_arn = element(var.triggering_sns_arns, count.index)
+  count     = length(var.triggering_sns_topics)
+  topic_arn = element(var.triggering_sns_topics, count.index).sns_arn
   protocol  = "sqs"
+  filter_policy = element(var.triggering_sns_topics, count.index).filter_policy_json
   endpoint  = aws_sqs_queue.lambda_trigger[0].arn
 }
 
