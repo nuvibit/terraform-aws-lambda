@@ -119,7 +119,10 @@ data "aws_iam_policy_document" "lambda_trigger" {
 }
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
-  for_each      = {for item in var.triggering_sns_topics : item => item if item.sns_arn != null}
+  for_each      = {
+    for k, v in var.triggering_sns_topics : k => v if v.sns_arn != null
+  }
+
   topic_arn     = each.value.sns_arn
   protocol      = "sqs"
   filter_policy = each.value.filter_policy_json
