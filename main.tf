@@ -112,7 +112,7 @@ data "aws_iam_policy_document" "lambda_trigger" {
       test     = "ArnLike"
       variable = "aws:SourceArn"
       values = [
-        for item in var.triggering_sns_topics : item.sns_arn if item != null
+        for item in var.triggering_sns_topics : item.sns_arn if item.sns_arn != null
       ]
     }
   }
