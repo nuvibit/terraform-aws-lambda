@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "lambda_trigger" {
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
   count     = length(var.triggering_sns_arns)
-  topic_arn = element(var.processing_outbound_enriched_sns_arn, count.index)
+  topic_arn = element(var.triggering_sns_arns, count.index)
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.lambda_trigger[0].arn
 }
