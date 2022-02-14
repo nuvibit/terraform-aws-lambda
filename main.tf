@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "lambda_trigger" {
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
   count     = length(var.triggering_sns_arns)
-  topic_arn = element(var.processing_outbound_enriched_sns_arn, count.index)
+  topic_arn = element(var.triggering_sns_arns, count.index)
   protocol  = "sqs"
   endpoint  = aws_sqs_queue.lambda_trigger[0].arn
 }
@@ -220,6 +220,7 @@ module "execution_role" {
   iam_execution_role_path                     = var.iam_execution_role_path
   iam_execution_role_permissions_boundary_arn = var.iam_execution_role_permissions_boundary_arn
   iam_execution_policy_arns                   = var.iam_execution_policy_arns
+  trigger_sqs                                 = local.trigger_sqs
   trigger_sqs_arn                             = local.trigger_sqs == true ? aws_sqs_queue.lambda_trigger[0].arn : ""
   lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
   resource_tags                               = var.resource_tags

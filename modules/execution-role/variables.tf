@@ -53,6 +53,12 @@ variable "iam_execution_policy_arns" {
   }
 }
 
+variable "trigger_sqs" {
+  description = "Specifies if the policy to the trigger SQS shall be added to the Execution Role"
+  type        = bool
+  default     = false
+}
+
 variable "trigger_sqs_arn" {
   description = "ARN of the SQS triggering the Lambda."
   type        = string
