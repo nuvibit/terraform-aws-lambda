@@ -119,7 +119,7 @@ data "aws_iam_policy_document" "lambda_trigger" {
 }
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
-  for_each      = {
+  for_each = {
     for k, v in var.triggering_sns_topics : k => v if v.sns_arn != null
   }
 
