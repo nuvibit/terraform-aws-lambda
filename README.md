@@ -126,11 +126,16 @@ module "lambda_vpc" {
 | [aws_cloudwatch_event_target.pattern](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_event_target.schedule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_log_group.lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
+| [aws_lambda_event_source_mapping.lambda_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_event_source_mapping) | resource |
 | [aws_lambda_function.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
 | [aws_lambda_permission.allowed_triggers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.pattern](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
 | [aws_lambda_permission.schedule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
+| [aws_sns_topic_subscription.lambda_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sns_topic_subscription) | resource |
+| [aws_sqs_queue.lambda_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue) | resource |
+| [aws_sqs_queue_policy.lambda_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/sqs_queue_policy) | resource |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
+| [aws_iam_policy_document.lambda_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
 | [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
@@ -165,6 +170,7 @@ module "lambda_vpc" {
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | Amount of time your Lambda Function has to run in seconds. | `number` | `3` | no |
 | <a name="input_tracing_mode"></a> [tracing\_mode](#input\_tracing\_mode) | Whether to to sample and trace a subset of incoming requests with AWS X-Ray. <br>  Valid values are PassThrough and Active. <br>  If PassThrough, Lambda will only trace the request from an upstream service if it contains a tracing header with "sampled=1". <br>  If Active, Lambda will respect any tracing header it receives from an upstream service. <br>  If no tracing header is received, Lambda will call X-Ray for a tracing decision. | `string` | `null` | no |
 | <a name="input_trigger_permissions"></a> [trigger\_permissions](#input\_trigger\_permissions) | Tuple of principals to grant lambda-trigger permission. | <pre>list(object(<br>    {<br>      principal  = string # The principal who is getting trigger permission. e.g. s3.amazonaws.com, any valid AWS service principal or an AWS account ID.<br>      source_arn = string # The ARN of the specific resource within that service to grant permission to. Set to 'any' to grant permission to any resource in principal.<br>    }<br>  ))</pre> | `[]` | no |
+| <a name="input_triggering_sns_arns"></a> [triggering\_sns\_arns](#input\_triggering\_sns\_arns) | List of SNS ARNs for triggering the Lambda. If provided a SQS for triggering the Lambda will be added and subscribed to the SNS. | <pre>list(string # The ARN of the SNS topic that will trigger the Lambda via the created SQS.<br>  )</pre> | `[]` | no |
 | <a name="input_vpc_security_group_ids"></a> [vpc\_security\_group\_ids](#input\_vpc\_security\_group\_ids) | List of security group IDs associated with the Lambda function. | `list(string)` | `[]` | no |
 | <a name="input_vpc_subnet_ids"></a> [vpc\_subnet\_ids](#input\_vpc\_subnet\_ids) | List of subnet IDs associated with the Lambda function. | `list(string)` | `[]` | no |
 
@@ -186,6 +192,7 @@ module "lambda_vpc" {
 | <a name="output_lambda_schedule_cloudwatch_event_rule_arn"></a> [lambda\_schedule\_cloudwatch\_event\_rule\_arn](#output\_lambda\_schedule\_cloudwatch\_event\_rule\_arn) | The Amazon Resource Name (ARN) of the lambda scheduling rule. |
 | <a name="output_lambda_schedule_cloudwatch_event_rule_id"></a> [lambda\_schedule\_cloudwatch\_event\_rule\_id](#output\_lambda\_schedule\_cloudwatch\_event\_rule\_id) | The name of the lambda scheduling rule. |
 | <a name="output_lambda_version"></a> [lambda\_version](#output\_lambda\_version) | Latest published version of your Lambda Function. |
+| <a name="output_sqs_trigger_arn"></a> [sqs\_trigger\_arn](#output\_sqs\_trigger\_arn) | Specifies if a SQS trigger for the Lambda should be created. |
 
 <!--- END_TF_DOCS --->
 

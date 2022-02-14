@@ -53,6 +53,16 @@ variable "iam_execution_policy_arns" {
   }
 }
 
+variable "trigger_sqs_arn" {
+  description = "ARN of the SQS triggering the Lambda."
+  type        = string
+  default     = ""
+  validation {
+    condition     = var.trigger_sqs_arn == "" ? true : can(regex("^arn:aws:sqs:", var.trigger_sqs_arn))
+    error_message = "Value must contain ARN, starting with \"arn:aws:sqs:\"."
+  }
+}
+
 variable "lambda_loggroup_name" {
   description = "Name of cloudwatch loggroup for lambda logging"
   type        = string

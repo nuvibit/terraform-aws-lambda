@@ -167,6 +167,21 @@ variable "reserved_concurrent_executions" {
   }
 }
 
+variable "triggering_sns_arns" {
+  description = "List of SNS ARNs for triggering the Lambda. If provided a SQS for triggering the Lambda will be added and subscribed to the SNS."
+  type = list(string # The ARN of the SNS topic that will trigger the Lambda via the created SQS.
+  )
+  default = []
+
+  validation {
+    condition = var.triggering_sns_arns == [] ? true : alltrue([
+      for p in var.triggering_sns_arns : can(regex("^arn:aws:sns:", p))
+    ])
+    error_message = "Values must contain SNS ARNs, starting with \"arn:aws:sns:\"."
+  }
+}
+
+
 variable "trigger_permissions" {
   description = "Tuple of principals to grant lambda-trigger permission."
   type = list(object(

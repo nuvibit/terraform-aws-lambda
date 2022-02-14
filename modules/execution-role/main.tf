@@ -25,7 +25,7 @@ data "aws_iam_role" "external_execution" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM LAMBDA ROLE
+# ¦ IAM LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "lambda" {
   count = var.create_execution_role ? 1 : 0
@@ -38,7 +38,7 @@ resource "aws_iam_role" "lambda" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM EXECUTION POLICY
+# ¦ IAM LAMBDA EXECUTION POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_iam_policy_document" "lambda" {
   statement {
@@ -54,6 +54,9 @@ data "aws_iam_policy_document" "lambda" {
   }
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ ATTACH IAM POLICIES
+# ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "lambda" {
   count = var.create_execution_role ? length(var.iam_execution_policy_arns) : 0
 
@@ -62,7 +65,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM LOGGING POLICY
+# ¦ LAMBDA LOGGING - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy" "lambda_logs" {
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
@@ -84,6 +87,30 @@ data "aws_iam_policy_document" "lambda_logs" {
         data.aws_caller_identity.current.account_id,
         var.lambda_loggroup_name
       )
+    ]
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ SQS - IAM POLICY
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_role_policy" "sqs_trigger" {
+  role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
+  policy = data.aws_iam_policy_document.sqs_trigger.json
+}
+
+data "aws_iam_policy_document" "sqs_trigger" {
+
+  statement {
+    sid    = "SqsTrigger"
+    effect = "Allow"
+    actions = [
+      "sqs:ReceiveMessage",
+      "sqs:DeleteMessage",
+      "sqs:GetQueueAttributes"
+    ]
+    resources = [
+      var.trigger_sqs_arn
     ]
   }
 }
