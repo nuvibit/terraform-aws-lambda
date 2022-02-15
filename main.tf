@@ -71,7 +71,7 @@ locals {
 resource "aws_sqs_queue" "lambda_trigger" {
   count = var.trigger_sqs_enabled == true ? 1 : 0
 
-  name                       = var.trigger_sqs_enabled_name
+  name                       = local.trigger_sqs_name
   visibility_timeout_seconds = var.timeout
   tags                       = var.resource_tags
 }
