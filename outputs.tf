@@ -72,3 +72,13 @@ output "trigger_sqs_arn" {
   description = "ARN of the optional Trigger-SQS."
   value       = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].arn : null
 }
+
+output "trigger_sqs_name" {
+  description = "Name of the optional Trigger-SQS."
+  value       = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].name : null
+}
+
+output "trigger_sqs_id" {
+  description = "ID of the optional Trigger-SQS."
+  value       = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].id : null
+}
