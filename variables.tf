@@ -173,7 +173,7 @@ variable "tracing_mode" {
 # ¦ LAMBDA TRIGGER
 # ---------------------------------------------------------------------------------------------------------------------
 variable "trigger_sqs_enabled" {
-  description = "Specifies if an SQS for triggering the Lambda will be created."
+  description = "Specifies, if a SQS for triggering the Lambda will be created."
   type        = bool
   default     = false
 }

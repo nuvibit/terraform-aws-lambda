@@ -95,14 +95,14 @@ data "aws_iam_policy_document" "lambda_logs" {
 # ¦ SQS - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy" "sqs_trigger" {
-  count = var.trigger_sqs == true ? 1 : 0
+  count = var.trigger_sqs_enabled == true ? 1 : 0
 
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.sqs_trigger[0].json
 }
 
 data "aws_iam_policy_document" "sqs_trigger" {
-  count = var.trigger_sqs == true ? 1 : 0
+  count = var.trigger_sqs_enabled == true ? 1 : 0
 
   statement {
     sid    = "SqsTrigger"
