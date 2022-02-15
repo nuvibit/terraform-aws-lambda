@@ -77,8 +77,6 @@ resource "random_string" "suffix" {
 # ¦ SNS TOPIC
 resource "aws_sns_topic" "triggering_sns" {
   name              = local.triggering_sns_sns_name
-  kms_master_key_id = var.semper_kms_arn
-  tags              = local.resource_tags
 }
 
 resource "aws_sns_topic_policy" "triggering_sns" {
