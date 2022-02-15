@@ -96,6 +96,7 @@ module "lambda_vpc" {
 
 * [`examples/lambda`][lambda-test-url]
 * [`examples/lambda-vpc`][lambda-vpc-test-url]
+* [`examples/lambda-sns`][lambda-sns-test-url]
 
 <!--- BEGIN_TF_DOCS --->
 ## Requirements
@@ -229,3 +230,4 @@ See [LICENSE][license-url] for full details
 [aws-url]: https://aws.amazon.com
 [lambda-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/examples/lambda
 [lambda-vpc-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/examples/lambda-vpc
+[lambda-sns-test-url]: https://github.com/nuvibit/terraform-aws-lambda/tree/main/examples/lambda-sns
