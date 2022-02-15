@@ -70,5 +70,5 @@ output "lambda_pattern_cloudwatch_event_rule_arns" {
 
 output "sqs_trigger_arn" {
   description = "Specifies if a SQS trigger for the Lambda should be created."
-  value       = local.trigger_sqs == true ? aws_sqs_queue.lambda_trigger[0].arn : null
+  value       = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].arn : null
 }
