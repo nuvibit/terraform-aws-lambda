@@ -139,7 +139,7 @@ module "lambda" {
       "filter_policy_json" = "{\"autoRemediation\": [true]}"
     } 
   ]
-  trigger_sqs_access_policy_sources_json = data.aws_iam_policy_document.lambda_sqs_inbound_permission.json
+  trigger_sqs_access_policy_sources_json = [data.aws_iam_policy_document.lambda_sqs_inbound_permission.json]
   schedule_expression     = "cron(0 12 * * ? *)"
   event_patterns          = local.event_patterns
   iam_execution_role_path = "/lambda/"
