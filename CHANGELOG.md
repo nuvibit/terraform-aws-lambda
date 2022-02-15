@@ -1,3 +1,10 @@
+# [1.4.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.3.0...1.4.0) (2022-02-15)
+
+
+### Features
+
+* adding optional sqs trigger ([#14](https://github.com/nuvibit/terraform-aws-lambda/issues/14)) ([9f4a00a](https://github.com/nuvibit/terraform-aws-lambda/commit/9f4a00ac66e1c89e43cfa670c067fbfd6c209e63))
+
 # [1.3.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.2.0...1.3.0) (2022-01-20)
 
 
