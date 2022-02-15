@@ -192,7 +192,7 @@ variable "trigger_sqs_inbound_sns_topics" {
     condition = var.trigger_sqs_inbound_sns_topics == [] ? true : alltrue([
       for p in var.trigger_sqs_inbound_sns_topics : (can(regex("^arn:aws:sns:", p.sns_arn)))
     ])
-    error_message = "Values must contain SNS ARN, starting with \"arn:aws:sns:\" and an optional filter_policy_json."
+    error_message = "Values must contain SNS ARN, starting with \"arn:aws:sns:\"."
   }
 }
 
