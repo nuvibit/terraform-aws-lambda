@@ -24,6 +24,7 @@
 * Creates IAM Execution Role for Lambda and attaches internal and provided policies
 * Optionally provide external IAM Execution Role ARN and skip creating new Execution Role
 * Creates a CloudWatch Log Group for Lambda logs
+* Optionally creates a SQS for triggering the Lambda
 * Optionally creates a CloudWatch Event Rule (for scheduling)
 
 <!-- USAGE -->
