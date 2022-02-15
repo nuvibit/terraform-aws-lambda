@@ -67,3 +67,18 @@ output "lambda_pattern_cloudwatch_event_rule_arns" {
   description = "The Amazon Resource Name (ARN) of the lambda pattern rule."
   value       = var.event_patterns != [] ? [for k, v in aws_cloudwatch_event_rule.pattern : v.arn] : []
 }
+
+output "trigger_sqs_arn" {
+  description = "ARN of the optional Trigger-SQS."
+  value       = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].arn : null
+}
+
+output "trigger_sqs_name" {
+  description = "Name of the optional Trigger-SQS."
+  value       = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].name : null
+}
+
+output "trigger_sqs_id" {
+  description = "ID of the optional Trigger-SQS."
+  value       = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].id : null
+}

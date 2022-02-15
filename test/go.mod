@@ -1,4 +1,4 @@
-module github.com/nuvibit/template-terraform-aws-module/test
+module github.com/nuvibit/terraform-aws-lambda/test
 
 go 1.16
 
