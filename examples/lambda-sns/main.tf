@@ -115,12 +115,16 @@ module "lambda" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name      = var.function_name
-  description        = var.description
-  local_package_path = data.archive_file.lambda_package.output_path
-  handler            = "main.lambda_handler"
-  triggering_sns_arns = [
-    aws_sns_topic.triggering_sns.arn
+  function_name       = var.function_name
+  description         = var.description
+  local_package_path  = data.archive_file.lambda_package.output_path
+  handler             = "main.lambda_handler"
+  trigger_sqs_enabled = true
+  trigger_sqs_inbound_sns_topics = [
+    {
+      "sns_arn"            = aws_sns_topic.triggering_sns.arn
+      "filter_policy_json" = "{\"autoRemediation\": true}"
+    }
   ]
   schedule_expression     = "cron(0 12 * * ? *)"
   event_patterns          = local.event_patterns
