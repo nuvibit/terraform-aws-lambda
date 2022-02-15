@@ -28,8 +28,6 @@ locals {
   suffix_k = local.suffix == "" ? "" : format("-%s", local.suffix) // Kebap
   suffix_s = local.suffix == "" ? "" : format("_%s", local.suffix) // Snake
 
-  trigger_sqs = length(var.triggering_sns_topics) > 0 ? true : false
-
   trigger_sqs_name = format(
     "%s-trigger%s",
     lower(var.function_name),
@@ -71,23 +69,24 @@ locals {
 # ¦ LAMBDA SQS TRIGGER (OPTIONAL)
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_sqs_queue" "lambda_trigger" {
-  count = local.trigger_sqs == true ? 1 : 0
+  count = var.trigger_sqs_enabled == true ? 1 : 0
 
-  name                       = local.trigger_sqs_name
+  name                       = var.trigger_sqs_enabled_name
   visibility_timeout_seconds = var.timeout
   tags                       = var.resource_tags
 }
 
 resource "aws_sqs_queue_policy" "lambda_trigger" {
-  count = local.trigger_sqs == true ? 1 : 0
+  count = var.trigger_sqs_enabled == true ? 1 : 0
 
   queue_url = aws_sqs_queue.lambda_trigger[0].id
   policy    = data.aws_iam_policy_document.lambda_trigger[0].json
 }
 
 data "aws_iam_policy_document" "lambda_trigger" {
-  count = local.trigger_sqs == true ? 1 : 0
+  count = var.trigger_sqs_enabled == true ? 1 : 0
 
+  source_json = var.core_log_security_findings_bucket_splunk_read_policy_json
   statement {
     sid     = "EnableIamUserPermissions"
     actions = ["sqs:*"]
@@ -98,29 +97,33 @@ data "aws_iam_policy_document" "lambda_trigger" {
     }
     resources = ["*"]
   }
-  statement {
-    sid = "AllowInboundSns"
-    actions = [
-      "sqs:SendMessage"
-    ]
-    principals {
-      type        = "Service"
-      identifiers = ["sns.amazonaws.com"]
-    }
-    resources = ["*"]
-    condition {
-      test     = "ArnLike"
-      variable = "aws:SourceArn"
-      values = [
-        for item in var.triggering_sns_topics : item.sns_arn if item.sns_arn != null
+
+  dynamic "statement" {
+    for_each = length(var.trigger_sqs_inbound_sns_topics) == 0 ? [] : ["add"]
+    content {
+      sid = "AllowInboundSns"
+      actions = [
+        "sqs:SendMessage"
       ]
+      principals {
+        type        = "Service"
+        identifiers = ["sns.amazonaws.com"]
+      }
+      resources = ["*"]
+      condition {
+        test     = "ArnLike"
+        variable = "aws:SourceArn"
+        values = [
+          for item in var.trigger_sqs_inbound_sns_topics : item.sns_arn if item.sns_arn != null
+        ]
+      }
     }
   }
 }
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
   for_each = {
-    for k, v in var.triggering_sns_topics : k => v if v.sns_arn != null
+    for k, v in var.trigger_sqs_inbound_sns_topics : k => v if v.sns_arn != null
   }
 
   topic_arn     = each.value.sns_arn
@@ -130,7 +133,7 @@ resource "aws_sns_topic_subscription" "lambda_trigger" {
 }
 
 resource "aws_lambda_event_source_mapping" "lambda_trigger" {
-  count = local.trigger_sqs == true ? 1 : 0
+  count = var.trigger_sqs_enabled == true ? 1 : 0
 
   event_source_arn = aws_sqs_queue.lambda_trigger[0].arn
   function_name    = aws_lambda_function.this.arn
@@ -226,8 +229,8 @@ module "execution_role" {
   iam_execution_role_path                     = var.iam_execution_role_path
   iam_execution_role_permissions_boundary_arn = var.iam_execution_role_permissions_boundary_arn
   iam_execution_policy_arns                   = var.iam_execution_policy_arns
-  trigger_sqs                                 = local.trigger_sqs
-  trigger_sqs_arn                             = local.trigger_sqs == true ? aws_sqs_queue.lambda_trigger[0].arn : ""
+  trigger_sqs                                 = var.trigger_sqs_enabled
+  trigger_sqs_arn                             = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].arn : ""
   lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
   resource_tags                               = var.resource_tags
   resource_name_suffix                        = var.resource_name_suffix

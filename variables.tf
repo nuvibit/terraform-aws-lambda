@@ -167,24 +167,35 @@ variable "reserved_concurrent_executions" {
   }
 }
 
-variable "triggering_sns_topics" {
-  description = "List of SNS ARNs for triggering the Lambda. If provided a SQS for triggering the Lambda will be added and subscribed to the SNS."
+variable "trigger_sqs_enabled" {
+  description = "Specifies if an SQS for triggering the Lambda will be created."
+  type    = bool
+  default = false
+}
+
+variable "trigger_sqs_inbound_sns_topics" {
+  description = "Only provide, if var.trigger_sqs_enabled = true. List of SNS ARNs the Trigger-SQS will be subscribed to."
   type = list(object(
     {
       sns_arn            = string # The ARN of the SNS topic that will trigger the Lambda via the created SQS.
-      filter_policy_json = string # Policy for filtering the stream to the SQS subscription to specific SNS items
+      filter_policy_json = string # Policy for filtering the stream to the SQS subscription to specific SNS items.
     }
   ))
   default = []
 
   validation {
-    condition = var.triggering_sns_topics == [] ? true : alltrue([
-      for p in var.triggering_sns_topics : (p.sns_arn == null || can(regex("^arn:aws:sns:", p.sns_arn)))
+    condition = var.trigger_sqs_inbound_sns_topics == [] ? true : alltrue([
+      for p in var.trigger_sqs_inbound_sns_topics : (p.sns_arn == null || can(regex("^arn:aws:sns:", p.sns_arn)))
     ])
     error_message = "Values must contain SNS ARN, starting with \"arn:aws:sns:\" and an optional filter_policy_json."
   }
 }
 
+variable "trigger_sqs_access_policy_source_json" {
+  description = "In case you have custom sources feeding the optional Trigger-SQS, you have to provide the snip of the SQS Access Policy here."
+  type        = string
+  default     = null
+}
 
 variable "trigger_permissions" {
   description = "Tuple of principals to grant lambda-trigger permission."
