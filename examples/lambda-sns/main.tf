@@ -89,6 +89,12 @@ data "aws_iam_policy_document" "triggering_sns" {
     sid       = "AllowedPublishers"
     actions   = ["sns:Publish"]
     effect    = "Allow"
+    principals {
+      type = "AWS"
+      identifiers = [
+        format("arn:aws:iam::%s:root", data.aws_caller_identity.current.id)
+      ]
+    }
     resources = [aws_sns_topic.triggering_sns.arn]
   }
   statement {
