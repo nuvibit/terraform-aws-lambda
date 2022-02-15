@@ -86,9 +86,9 @@ resource "aws_sns_topic_policy" "triggering_sns" {
 
 data "aws_iam_policy_document" "triggering_sns" {
   statement {
-    sid       = "AllowedPublishers"
-    actions   = ["sns:Publish"]
-    effect    = "Allow"
+    sid     = "AllowedPublishers"
+    actions = ["sns:Publish"]
+    effect  = "Allow"
     principals {
       type = "AWS"
       identifiers = [
