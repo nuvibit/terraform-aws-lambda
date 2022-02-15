@@ -196,6 +196,8 @@ module "lambda_vpc" {
 | <a name="output_lambda_schedule_cloudwatch_event_rule_id"></a> [lambda\_schedule\_cloudwatch\_event\_rule\_id](#output\_lambda\_schedule\_cloudwatch\_event\_rule\_id) | The name of the lambda scheduling rule. |
 | <a name="output_lambda_version"></a> [lambda\_version](#output\_lambda\_version) | Latest published version of your Lambda Function. |
 | <a name="output_trigger_sqs_arn"></a> [trigger\_sqs\_arn](#output\_trigger\_sqs\_arn) | ARN of the optional Trigger-SQS. |
+| <a name="output_trigger_sqs_id"></a> [trigger\_sqs\_id](#output\_trigger\_sqs\_id) | ID of the optional Trigger-SQS. |
+| <a name="output_trigger_sqs_name"></a> [trigger\_sqs\_name](#output\_trigger\_sqs\_name) | Name of the optional Trigger-SQS. |
 
 <!--- END_TF_DOCS --->
 
