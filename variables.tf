@@ -169,8 +169,8 @@ variable "reserved_concurrent_executions" {
 
 variable "trigger_sqs_enabled" {
   description = "Specifies if an SQS for triggering the Lambda will be created."
-  type    = bool
-  default = false
+  type        = bool
+  default     = false
 }
 
 variable "trigger_sqs_inbound_sns_topics" {
