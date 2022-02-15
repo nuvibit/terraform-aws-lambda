@@ -76,7 +76,7 @@ resource "random_string" "suffix" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ SNS TOPIC
 resource "aws_sns_topic" "triggering_sns" {
-  name              = local.triggering_sns_sns_name
+  name = format("%s-feed", var.function_name)
 }
 
 resource "aws_sns_topic_policy" "triggering_sns" {
