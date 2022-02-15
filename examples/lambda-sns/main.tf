@@ -105,6 +105,21 @@ data "aws_iam_policy_document" "triggering_sns" {
   }
 }
 
+data "aws_iam_policy_document" "lambda_sqs_inbound_permission" {
+  statement {
+    sid = "AllowLambdaToSqs"
+    actions = [
+      "sqs:SendMessage"
+    ]
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    resources = ["*"]
+  }
+}
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LAMBDA
 # ---------------------------------------------------------------------------------------------------------------------
@@ -122,8 +137,9 @@ module "lambda" {
     {
       "sns_arn"            = aws_sns_topic.triggering_sns.arn
       "filter_policy_json" = "{\"autoRemediation\": [true]}"
-    }
+    } 
   ]
+  trigger_sqs_access_policy_sources_json = data.aws_iam_policy_document.lambda_sqs_inbound_permission.json
   schedule_expression     = "cron(0 12 * * ? *)"
   event_patterns          = local.event_patterns
   iam_execution_role_path = "/lambda/"

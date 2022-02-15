@@ -190,16 +190,16 @@ variable "trigger_sqs_inbound_sns_topics" {
 
   validation {
     condition = var.trigger_sqs_inbound_sns_topics == [] ? true : alltrue([
-      for p in var.trigger_sqs_inbound_sns_topics : (p.sns_arn == null || can(regex("^arn:aws:sns:", p.sns_arn)))
+      for p in var.trigger_sqs_inbound_sns_topics : (can(regex("^arn:aws:sns:", p.sns_arn)))
     ])
     error_message = "Values must contain SNS ARN, starting with \"arn:aws:sns:\" and an optional filter_policy_json."
   }
 }
 
-variable "trigger_sqs_access_policy_source_json" {
-  description = "In case you have custom sources feeding the optional Trigger-SQS, you have to provide the snip of the SQS Access Policy here."
-  type        = string
-  default     = null
+variable "trigger_sqs_access_policy_sources_json" {
+  description = "In case you have custom sources feeding the optional Trigger-SQS, you have to provide the SQS Access Policies here."
+  type        = list(string)
+  default     = []
 }
 
 variable "trigger_permissions" {

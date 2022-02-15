@@ -86,7 +86,7 @@ resource "aws_sqs_queue_policy" "lambda_trigger" {
 data "aws_iam_policy_document" "lambda_trigger" {
   count = var.trigger_sqs_enabled == true ? 1 : 0
 
-  source_json = var.trigger_sqs_access_policy_source_json
+  source_policy_documents = var.trigger_sqs_access_policy_sources_json
   statement {
     sid     = "EnableIamUserPermissions"
     actions = ["sqs:*"]
@@ -122,13 +122,14 @@ data "aws_iam_policy_document" "lambda_trigger" {
 }
 
 resource "aws_sns_topic_subscription" "lambda_trigger" {
-  for_each = {
+  count = length(var.trigger_sqs_inbound_sns_topics)
+/*  for_each = {
     for t in var.trigger_sqs_inbound_sns_topics : t.sns_arn => t if t.sns_arn != null
   }
-
-  topic_arn     = each.value.sns_arn
+*/
+  topic_arn     = element(var.trigger_sqs_inbound_sns_topics, count.index).sns_arn //each.value.sns_arn
   protocol      = "sqs"
-  filter_policy = each.value.filter_policy_json
+  filter_policy = element(var.trigger_sqs_inbound_sns_topics, count.index).filter_policy_json //each.value.filter_policy_json
   endpoint      = aws_sqs_queue.lambda_trigger[0].arn
 }
 
