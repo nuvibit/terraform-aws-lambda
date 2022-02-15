@@ -102,35 +102,6 @@ variable "environment_variables" {
   default     = {}
 }
 
-variable "vpc_subnet_ids" {
-  description = "List of subnet IDs associated with the Lambda function."
-  type        = list(string)
-  default     = []
-}
-
-variable "vpc_security_group_ids" {
-  description = "List of security group IDs associated with the Lambda function."
-  type        = list(string)
-  default     = []
-}
-
-variable "tracing_mode" {
-  description = <<EOT
-  Whether to to sample and trace a subset of incoming requests with AWS X-Ray. 
-  Valid values are PassThrough and Active. 
-  If PassThrough, Lambda will only trace the request from an upstream service if it contains a tracing header with "sampled=1". 
-  If Active, Lambda will respect any tracing header it receives from an upstream service. 
-  If no tracing header is received, Lambda will call X-Ray for a tracing decision.
-  EOT
-  type        = string
-  default     = null
-
-  validation {
-    condition     = var.tracing_mode == null ? true : contains(["PassThrough", "Active"], var.tracing_mode)
-    error_message = "Value must be \"PassThrough\" or \"Active\"."
-  }
-}
-
 variable "file_system_config_arn" {
   description = "Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system."
   type        = string
@@ -167,6 +138,40 @@ variable "reserved_concurrent_executions" {
   }
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ LAMBDA VPC
+# ---------------------------------------------------------------------------------------------------------------------
+variable "vpc_subnet_ids" {
+  description = "List of subnet IDs associated with the Lambda function."
+  type        = list(string)
+  default     = []
+}
+
+variable "vpc_security_group_ids" {
+  description = "List of security group IDs associated with the Lambda function."
+  type        = list(string)
+  default     = []
+}
+
+variable "tracing_mode" {
+  description = <<EOT
+  Whether to to sample and trace a subset of incoming requests with AWS X-Ray. 
+  Valid values are PassThrough and Active. 
+  If PassThrough, Lambda will only trace the request from an upstream service if it contains a tracing header with "sampled=1". 
+  If Active, Lambda will respect any tracing header it receives from an upstream service. 
+  If no tracing header is received, Lambda will call X-Ray for a tracing decision.
+  EOT
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.tracing_mode == null ? true : contains(["PassThrough", "Active"], var.tracing_mode)
+    error_message = "Value must be \"PassThrough\" or \"Active\"."
+  }
+}
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ LAMBDA TRIGGER
+# ---------------------------------------------------------------------------------------------------------------------
 variable "trigger_sqs_enabled" {
   description = "Specifies if an SQS for triggering the Lambda will be created."
   type    = bool
@@ -215,8 +220,37 @@ variable "trigger_permissions" {
   }
 }
 
+variable "schedule_expression" {
+  description = "The scheduling expression. For example, cron(0 20 * * ? *) or rate(5 minutes)."
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.schedule_expression == null ? true : can(regex("^(rate\\(((1 (hour|minute|day))|(\\d+ (hours|minutes|days)))\\))|(cron\\(\\s*($|#|\\w+\\s*=|(\\?|\\*|(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?(?:,(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?)*)\\s+(\\?|\\*|(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?(?:,(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?)*)\\s+(\\?|\\*|(?:[01]?\\d|2[0-3])(?:(?:-|\\/|\\,)(?:[01]?\\d|2[0-3]))?(?:,(?:[01]?\\d|2[0-3])(?:(?:-|\\/|\\,)(?:[01]?\\d|2[0-3]))?)*)\\s+(\\?|\\*|(?:0?[1-9]|[12]\\d|3[01])(?:(?:-|\\/|\\,)(?:0?[1-9]|[12]\\d|3[01]))?(?:,(?:0?[1-9]|[12]\\d|3[01])(?:(?:-|\\/|\\,)(?:0?[1-9]|[12]\\d|3[01]))?)*)\\s+(\\?|\\*|(?:[1-9]|1[012])(?:(?:-|\\/|\\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\\/|\\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\\?|\\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\\s+(\\?|\\*|(?:[0-6])(?:(?:-|\\/|\\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\\/|\\,|#)(?:[0-6]))?(?:L)?)*|\\?|\\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\\s)+(\\?|\\*|(?:|\\d{4})(?:(?:-|\\/|\\,)(?:|\\d{4}))?(?:,(?:|\\d{4})(?:(?:-|\\/|\\,)(?:|\\d{4}))?)*))\\))$", var.schedule_expression))
+    error_message = "Value must match standard rate or cron expression."
+  }
+}
+
+variable "event_patterns" {
+  # https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events.html
+  description = "A List of event patterns described as JSON objects."
+  type        = list(string)
+  default     = []
+
+  validation {
+    condition = var.event_patterns == [] ? true : alltrue([
+      for pattern in var.event_patterns : (
+        can(jsondecode(pattern)) ?
+        can(jsondecode(pattern).source) :
+        false
+      )
+    ])
+    error_message = "Values must be valid JSON and have \"source\" field set."
+  }
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ IAM
+# ¦ LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 variable "create_execution_role" {
   description = "Controls if IAM execution role should be created. If set to false an iam execute role ARN for 'iam_execution_role_external_arn' needs to be provided."
@@ -297,41 +331,6 @@ All previously ingested data remains encrypted, and AWS CloudWatch Logs requires
   validation {
     condition     = var.log_kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.log_kms_key_arn))
     error_message = "Value must contain ARN, starting with \"arn:aws:kms\"."
-  }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ CLOUDWATCH SCHEDULE RULE
-# ---------------------------------------------------------------------------------------------------------------------
-variable "schedule_expression" {
-  description = "The scheduling expression. For example, cron(0 20 * * ? *) or rate(5 minutes)."
-  type        = string
-  default     = null
-
-  validation {
-    condition     = var.schedule_expression == null ? true : can(regex("^(rate\\(((1 (hour|minute|day))|(\\d+ (hours|minutes|days)))\\))|(cron\\(\\s*($|#|\\w+\\s*=|(\\?|\\*|(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?(?:,(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?)*)\\s+(\\?|\\*|(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?(?:,(?:[0-5]?\\d)(?:(?:-|\\/|\\,)(?:[0-5]?\\d))?)*)\\s+(\\?|\\*|(?:[01]?\\d|2[0-3])(?:(?:-|\\/|\\,)(?:[01]?\\d|2[0-3]))?(?:,(?:[01]?\\d|2[0-3])(?:(?:-|\\/|\\,)(?:[01]?\\d|2[0-3]))?)*)\\s+(\\?|\\*|(?:0?[1-9]|[12]\\d|3[01])(?:(?:-|\\/|\\,)(?:0?[1-9]|[12]\\d|3[01]))?(?:,(?:0?[1-9]|[12]\\d|3[01])(?:(?:-|\\/|\\,)(?:0?[1-9]|[12]\\d|3[01]))?)*)\\s+(\\?|\\*|(?:[1-9]|1[012])(?:(?:-|\\/|\\,)(?:[1-9]|1[012]))?(?:L|W)?(?:,(?:[1-9]|1[012])(?:(?:-|\\/|\\,)(?:[1-9]|1[012]))?(?:L|W)?)*|\\?|\\*|(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?(?:,(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC)(?:(?:-)(?:JAN|FEB|MAR|APR|MAY|JUN|JUL|AUG|SEP|OCT|NOV|DEC))?)*)\\s+(\\?|\\*|(?:[0-6])(?:(?:-|\\/|\\,|#)(?:[0-6]))?(?:L)?(?:,(?:[0-6])(?:(?:-|\\/|\\,|#)(?:[0-6]))?(?:L)?)*|\\?|\\*|(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?(?:,(?:MON|TUE|WED|THU|FRI|SAT|SUN)(?:(?:-)(?:MON|TUE|WED|THU|FRI|SAT|SUN))?)*)(|\\s)+(\\?|\\*|(?:|\\d{4})(?:(?:-|\\/|\\,)(?:|\\d{4}))?(?:,(?:|\\d{4})(?:(?:-|\\/|\\,)(?:|\\d{4}))?)*))\\))$", var.schedule_expression))
-    error_message = "Value must match standard rate or cron expression."
-  }
-}
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ CLOUDWATCH PATTERN RULES
-# ---------------------------------------------------------------------------------------------------------------------
-variable "event_patterns" {
-  # https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-events.html
-  description = "A List of event patterns described as JSON objects."
-  type        = list(string)
-  default     = []
-
-  validation {
-    condition = var.event_patterns == [] ? true : alltrue([
-      for pattern in var.event_patterns : (
-        can(jsondecode(pattern)) ?
-        can(jsondecode(pattern).source) :
-        false
-      )
-    ])
-    error_message = "Values must be valid JSON and have \"source\" field set."
   }
 }
 
