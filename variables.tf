@@ -199,7 +199,7 @@ variable "trigger_sqs_inbound_sns_topics" {
 variable "trigger_sqs_access_policy_sources_json" {
   description = "In case you have custom sources feeding the optional Trigger-SQS, you have to provide the SQS Access Policies here."
   type        = list(string)
-  default     = []
+  default     = null
 }
 
 variable "trigger_permissions" {
