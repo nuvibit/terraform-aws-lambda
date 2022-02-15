@@ -123,7 +123,7 @@ module "lambda" {
   trigger_sqs_inbound_sns_topics = [
     {
       "sns_arn"            = aws_sns_topic.triggering_sns.arn
-      "filter_policy_json" = "{\"autoRemediation\": true}"
+      "filter_policy_json" = "{\"autoRemediation\": [true]}"
     }
   ]
   schedule_expression     = "cron(0 12 * * ? *)"
