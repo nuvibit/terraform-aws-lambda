@@ -86,7 +86,7 @@ resource "aws_sqs_queue_policy" "lambda_trigger" {
 data "aws_iam_policy_document" "lambda_trigger" {
   count = var.trigger_sqs_enabled == true ? 1 : 0
 
-  source_json = var.core_log_security_findings_bucket_splunk_read_policy_json
+  source_json = var.trigger_sqs_access_policy_source_json
   statement {
     sid     = "EnableIamUserPermissions"
     actions = ["sqs:*"]
