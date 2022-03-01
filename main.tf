@@ -306,7 +306,7 @@ resource "aws_cloudwatch_event_target" "pattern" {
 # ¦ OPTIONAL KMS CMK PERMISSIONS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_grant" "allow_sqs" {
-  count = var.kms_key_arn != null && trigger_sqs_enabled == true ? 1 : 0
+  count = var.kms_key_arn != null && var.trigger_sqs_enabled == true ? 1 : 0
 
   name              = "GrantLambdaKmsAccess"
   key_id            = var.kms_key_arn
