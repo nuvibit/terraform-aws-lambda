@@ -128,6 +128,7 @@ module "lambda_vpc" {
 | [aws_cloudwatch_event_target.pattern](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_event_target.schedule](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_event_target) | resource |
 | [aws_cloudwatch_log_group.lambda_logs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/cloudwatch_log_group) | resource |
+| [aws_kms_grant.allow_sqs](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/kms_grant) | resource |
 | [aws_lambda_event_source_mapping.lambda_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_event_source_mapping) | resource |
 | [aws_lambda_function.this](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_function) | resource |
 | [aws_lambda_permission.allowed_triggers](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/resources/lambda_permission) | resource |
@@ -157,9 +158,9 @@ module "lambda_vpc" {
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. If omitted, will be generated with function name. | `string` | `null` | no |
 | <a name="input_iam_execution_role_path"></a> [iam\_execution\_role\_path](#input\_iam\_execution\_role\_path) | Path of the IAM role. | `string` | `null` | no |
 | <a name="input_iam_execution_role_permissions_boundary_arn"></a> [iam\_execution\_role\_permissions\_boundary\_arn](#input\_iam\_execution\_role\_permissions\_boundary\_arn) | ARN of the policy that is used to set the permissions boundary for the role. | `string` | `null` | no |
+| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | The ARN of the KMS Key to use when encrypting Lambda debug log data and the optional SQS Trigger. <br>Please note, after the AWS KMS CMK is disassociated from the log group, AWS CloudWatch Logs stops encrypting newly ingested data for the log group. <br>All previously ingested data remains encrypted, and AWS CloudWatch Logs requires permissions for the CMK whenever the encrypted data is requested. | `string` | `null` | no |
 | <a name="input_layers"></a> [layers](#input\_layers) | List of Lambda Layer Version ARNs (maximum of 5) to attach to your Lambda Function. | `list(string)` | `null` | no |
 | <a name="input_local_package_path"></a> [local\_package\_path](#input\_local\_package\_path) | Path to the function's deployment package within the local filesystem. | `string` | `null` | no |
-| <a name="input_log_kms_key_arn"></a> [log\_kms\_key\_arn](#input\_log\_kms\_key\_arn) | The ARN of the KMS Key to use when encrypting log data. <br>Please note, after the AWS KMS CMK is disassociated from the log group, AWS CloudWatch Logs stops encrypting newly ingested data for the log group. <br>All previously ingested data remains encrypted, and AWS CloudWatch Logs requires permissions for the CMK whenever the encrypted data is requested. | `string` | `null` | no |
 | <a name="input_log_retention_in_days"></a> [log\_retention\_in\_days](#input\_log\_retention\_in\_days) | Specifies the number of days you want to retain log events in the specified log group. | `number` | `null` | no |
 | <a name="input_memory_size"></a> [memory\_size](#input\_memory\_size) | Amount of memory in MB your Lambda Function can use at runtime. | `number` | `128` | no |
 | <a name="input_package_type"></a> [package\_type](#input\_package\_type) | Lambda deployment package type. | `string` | `"Zip"` | no |
