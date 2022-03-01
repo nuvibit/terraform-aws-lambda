@@ -303,19 +303,13 @@ resource "aws_cloudwatch_event_target" "pattern" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ OPTION KMS CMK PERMISSIONS
+# ¦ OPTIONAL KMS CMK PERMISSIONS
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_grant" "allow_sqs" {
   count = var.kms_key_arn != null && trigger_sqs_enabled == true ? 1 : 0
 
-  name              = "GrantLambdaTriggerSqs"
+  name              = "GrantLambdaKmsAccess"
   key_id            = var.kms_key_arn
-  grantee_principal = aws_iam_role.a.arn
+  grantee_principal = module.execution_role.lambda_execution_role_arn
   operations        = ["Encrypt", "Decrypt", "GenerateDataKey"]
-
-  constraints {
-    encryption_context_equals = {
-      Department = "Finance"
-    }
-  }
 }

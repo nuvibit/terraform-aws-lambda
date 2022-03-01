@@ -322,6 +322,18 @@ variable "log_retention_in_days" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ SECURITY
 # ---------------------------------------------------------------------------------------------------------------------
+variable "encryption" {
+  description = <<EOT
+Manages the encryption of the Lambda Debug CloudWatch LogGroup and the optional SQS.
+If this variable is False (default) and kms_key_arn == null (default), no encryption will be applied.
+If this variable is True and kms_key_arn == null, a new KMS CMK will be created.
+If this variable is True and kms_key_arn != null, the provided KMS CMK will be used and the key policy will be extended.
+If this variable is False and kms_key_arn != null, the provided KMS CMK will be used and the key policy will be extended.
+  EOT
+  type        = bool
+  default     = false
+}
+
 variable "kms_key_arn" {
   description = <<EOT
 The ARN of the KMS Key to use when encrypting Lambda debug log data and the optional SQS Trigger. 
