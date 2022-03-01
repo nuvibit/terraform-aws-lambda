@@ -306,7 +306,7 @@ variable "iam_execution_policy_arns" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ CLOUDWATCH LOGS
+# ¦ DEBUG CLOUDWATCH LOGS
 # ---------------------------------------------------------------------------------------------------------------------
 variable "log_retention_in_days" {
   description = "Specifies the number of days you want to retain log events in the specified log group."
@@ -319,9 +319,12 @@ variable "log_retention_in_days" {
   }
 }
 
-variable "log_kms_key_arn" {
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ SECURITY
+# ---------------------------------------------------------------------------------------------------------------------
+variable "kms_key_arn" {
   description = <<EOT
-The ARN of the KMS Key to use when encrypting log data. 
+The ARN of the KMS Key to use when encrypting Lambda debug log data and the optional SQS Trigger. 
 Please note, after the AWS KMS CMK is disassociated from the log group, AWS CloudWatch Logs stops encrypting newly ingested data for the log group. 
 All previously ingested data remains encrypted, and AWS CloudWatch Logs requires permissions for the CMK whenever the encrypted data is requested.
   EOT
@@ -329,8 +332,8 @@ All previously ingested data remains encrypted, and AWS CloudWatch Logs requires
   default     = null
 
   validation {
-    condition     = var.log_kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.log_kms_key_arn))
-    error_message = "Value must contain ARN, starting with \"arn:aws:kms\"."
+    condition     = var.log_kms_key_arn == null ? true : can(regex("^arn:aws:kms:", var.log_kms_key_arn))
+    error_message = "Value must contain ARN, starting with \"arn:aws:kms:\"."
   }
 }
 

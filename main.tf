@@ -73,6 +73,7 @@ resource "aws_sqs_queue" "lambda_trigger" {
 
   name                       = local.trigger_sqs_name
   visibility_timeout_seconds = var.timeout
+  kms_master_key_id          = var.kms_key_arn
   tags                       = var.resource_tags
 }
 
@@ -239,7 +240,7 @@ module "execution_role" {
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = local.loggroup_name
   retention_in_days = var.log_retention_in_days
-  kms_key_id        = var.log_kms_key_arn
+  kms_key_id        = var.kms_key_arn
   tags              = var.resource_tags
 }
 
@@ -299,4 +300,22 @@ resource "aws_cloudwatch_event_target" "pattern" {
   target_id = "attach_schedule_to_lambda"
   rule      = aws_cloudwatch_event_rule.pattern[each.key].name
   arn       = aws_lambda_function.this.arn
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ OPTION KMS CMK PERMISSIONS
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_kms_grant" "allow_sqs" {
+  count = var.kms_key_arn != null && trigger_sqs_enabled == true ? 1 : 0
+
+  name              = "GrantLambdaTriggerSqs"
+  key_id            = var.kms_key_arn
+  grantee_principal = aws_iam_role.a.arn
+  operations        = ["Encrypt", "Decrypt", "GenerateDataKey"]
+
+  constraints {
+    encryption_context_equals = {
+      Department = "Finance"
+    }
+  }
 }
