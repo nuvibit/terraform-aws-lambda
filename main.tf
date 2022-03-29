@@ -137,14 +137,9 @@ resource "aws_lambda_event_source_mapping" "lambda_trigger" {
   function_name    = aws_lambda_function.this.arn
 }
 
-
-variable "package_source_path" {
-  description = "Path to the function's code to create the deployment package."
-  type        = string
-  default     = null
-}
-
-
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ LAMBDA
+# ---------------------------------------------------------------------------------------------------------------------
 data "archive_file" "lambda_package" {
   count = var.package_source_path == null ? 0 : 1
 
@@ -153,9 +148,6 @@ data "archive_file" "lambda_package" {
   output_path = "${path.module}/zipped_package.zip"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ LAMBDA
-# ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lambda_function" "this" {
   function_name                  = local.lambda_name
   description                    = var.description
