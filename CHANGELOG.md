@@ -1,3 +1,10 @@
+## [1.4.1](https://github.com/nuvibit/terraform-aws-lambda/compare/1.4.0...1.4.1) (2022-03-29)
+
+
+### Bug Fixes
+
+* adding package source handling ([#17](https://github.com/nuvibit/terraform-aws-lambda/issues/17)) ([7502cd6](https://github.com/nuvibit/terraform-aws-lambda/commit/7502cd6ea62251abe63c48c9598a1660b65bba4e))
+
 # [1.4.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.3.0...1.4.0) (2022-02-15)
 
 
