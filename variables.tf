@@ -48,6 +48,12 @@ variable "local_package_path" {
   default     = null
 }
 
+variable "local_package_base64sha256" {
+  description = "base64sha256 of the function's deployment package."
+  type        = string
+  default     = null
+}
+
 variable "handler" {
   description = "Function entrypoint in your code."
   type        = string

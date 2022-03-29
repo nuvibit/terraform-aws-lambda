@@ -151,7 +151,7 @@ resource "aws_lambda_function" "this" {
   memory_size                    = var.memory_size
   runtime                        = var.runtime
   timeout                        = var.timeout
-  source_code_hash               = filebase64sha256(var.local_package_path)
+  source_code_hash               = var.local_package_base64sha256 == null ? filebase64sha256(var.local_package_path) : var.local_package_base64sha256
   reserved_concurrent_executions = var.reserved_concurrent_executions
   publish                        = var.publish
   tags                           = var.resource_tags
