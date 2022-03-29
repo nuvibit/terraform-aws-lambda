@@ -136,7 +136,7 @@ module "lambda_2" {
 
   function_name           = var.function_name
   description             = var.description
-  package_source_path     = "${path.module}/lambda_files" 
+  package_source_path     = "${path.module}/lambda_files"
   handler                 = "main.lambda_handler"
   schedule_expression     = "cron(0 12 * * ? *)"
   event_patterns          = local.event_patterns
