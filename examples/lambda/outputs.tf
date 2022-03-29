@@ -1,8 +1,8 @@
 output "lambda_name" {
-  value = module.lambda_1.lambda_name
+  value = module.lambda.lambda_name
 }
 
 output "lambda_arn" {
-  value = module.lambda_1.lambda_arn
+  value = module.lambda.lambda_arn
 }
 
