@@ -80,7 +80,7 @@ module "lambda" {
   description                      = var.description
   vpc_subnet_ids                   = [aws_subnet.first.id, aws_subnet.second.id]
   vpc_security_group_ids           = [aws_security_group.allow_https.id]
-  local_package_path               = data.archive_file.lambda_package.output_path
+  package_source_path              = "${path.module}/lambda_files"
   handler                          = "main.lambda_handler"
   create_execution_role            = false
   iam_execution_role_external_name = aws_iam_role.lambda.name
@@ -92,12 +92,6 @@ module "lambda" {
   runtime              = "python3.9"
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
-}
-
-data "archive_file" "lambda_package" {
-  type        = "zip"
-  source_dir  = "${path.module}/lambda_files"
-  output_path = "${path.module}/lambda_files_zipped/package.zip"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
