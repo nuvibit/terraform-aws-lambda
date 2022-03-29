@@ -1,0 +1,15 @@
+name: TERRAFORM MODULE
+
+on:
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  terraform-module:
+    uses: nuvibit/github-workflows/.github/workflows/terraform_module_aws.yaml@main
+    secrets:
+      GH_SA_TOKEN_RO: ${{ secrets.GH_SA_TOKEN_RO }}
+      TF_API_TOKEN: ${{ secrets.TF_API_TOKEN }}
+      TERRATEST_AWS_ACCESS_KEY: ${{ secrets.TERRATEST_AWS_ACCESS_KEY }}
+      TERRATEST_AWS_SECRET_ACCESS_KEY: ${{ secrets.TERRATEST_AWS_SECRET_ACCESS_KEY }}

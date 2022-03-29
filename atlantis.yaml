@@ -1,0 +1,7 @@
+version: 3
+projects:
+- name: root
+  dir: .
+
+- name: modules-execution-role
+  dir: modules/execution-role
