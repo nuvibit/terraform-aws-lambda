@@ -133,11 +133,12 @@ module "lambda" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name       = var.function_name
-  description         = var.description
-  local_package_path  = data.archive_file.lambda_package.output_path
-  handler             = "main.lambda_handler"
-  trigger_sqs_enabled = true
+  function_name              = var.function_name
+  description                = var.description
+  local_package_path         = data.archive_file.lambda_package.output_path
+  local_package_base64sha256 = data.archive_file.lambda_package.output_base64sha256
+  handler                    = "main.lambda_handler"
+  trigger_sqs_enabled        = true
   trigger_sqs_inbound_sns_topics = [
     {
       "sns_arn"            = aws_sns_topic.triggering_sns.arn
