@@ -135,7 +135,7 @@ module "lambda" {
 
   function_name       = var.function_name
   description         = var.description
-  local_package_path  = data.archive_file.lambda_package.output_path
+  package_source_path = "${path.module}/lambda_files"
   handler             = "main.lambda_handler"
   trigger_sqs_enabled = true
   trigger_sqs_inbound_sns_topics = [
@@ -159,12 +159,6 @@ module "lambda" {
   runtime              = "python3.9"
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
-}
-
-data "archive_file" "lambda_package" {
-  type        = "zip"
-  source_dir  = "${path.module}/lambda_files"
-  output_path = "${path.module}/lambda_files_zipped/package.zip"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

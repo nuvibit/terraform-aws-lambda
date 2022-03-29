@@ -26,10 +26,11 @@ func TestLambda(t *testing.T) {
 
 	defer terraform.Destroy(t, terraformOptions)
 
-	lambdaArn := terraform.Output(t, terraformOptions, "lambda_arn")
-	if strings.Contains(lambdaArn, "test_lambda") {
+	lambda_Arn := terraform.Output(t, terraformOptions, "lambda_arn")
+	if strings.Contains(lambda_Arn, "test_lambda") {
 		t.Log("PASSED: lambda_arn contains \"test_lambda\"")
 	} else {
 		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda\"")
 	}
+
 }

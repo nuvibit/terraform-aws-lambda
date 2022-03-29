@@ -43,7 +43,13 @@ variable "package_type" {
 }
 
 variable "local_package_path" {
-  description = "Path to the function's deployment package within the local filesystem."
+  description = "Will be deprecated. Path to the function's deployment package within the local filesystem."
+  type        = string
+  default     = null
+}
+
+variable "package_source_path" {
+  description = "Path to the function's code to create the deployment package."
   type        = string
   default     = null
 }
