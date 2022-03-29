@@ -74,9 +74,27 @@ resource "random_string" "suffix" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ LAMBDA
+# ¦ LAMBDA EXECUTION POLICIES
 # ---------------------------------------------------------------------------------------------------------------------
-module "lambda" {
+resource "aws_iam_policy" "list_users" {
+  name   = local.execution_policy_name
+  policy = data.aws_iam_policy_document.list_users.json
+}
+
+data "aws_iam_policy_document" "list_users" {
+  # enable IAM in logging account
+  statement {
+    sid       = "EnableOrganization"
+    effect    = "Allow"
+    actions   = ["iam:ListUsers"]
+    resources = ["*"]
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ LAMBDA WITH PROVIDED LOCAL PACKAGE
+# ---------------------------------------------------------------------------------------------------------------------
+module "lambda_1" {
   # source  = "nuvibit/lambda/aws"
   # version = "~> 1.0"
   source = "../../"
@@ -107,20 +125,31 @@ data "archive_file" "lambda_package" {
   output_path = "${path.module}/lambda_files_zipped/package.zip"
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ LAMBDA EXECUTION POLICIES
-# ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_policy" "list_users" {
-  name   = local.execution_policy_name
-  policy = data.aws_iam_policy_document.list_users.json
-}
 
-data "aws_iam_policy_document" "list_users" {
-  # enable IAM in logging account
-  statement {
-    sid       = "EnableOrganization"
-    effect    = "Allow"
-    actions   = ["iam:ListUsers"]
-    resources = ["*"]
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ LAMBDA WITH LOCAL PACKAGE PATH
+# ---------------------------------------------------------------------------------------------------------------------
+module "lambda_2" {
+  # source  = "nuvibit/lambda/aws"
+  # version = "~> 1.0"
+  source = "../../"
+
+  function_name           = var.function_name
+  description             = var.description
+  package_source_path     = "${path.module}/lambda_files" 
+  handler                 = "main.lambda_handler"
+  schedule_expression     = "cron(0 12 * * ? *)"
+  event_patterns          = local.event_patterns
+  iam_execution_role_path = "/lambda/"
+  iam_execution_policy_arns = [
+    aws_iam_policy.list_users.arn
+  ]
+  environment_variables = {
+    ACCOUNT_ID = data.aws_caller_identity.current.account_id
   }
+  memory_size          = 128
+  timeout              = 360
+  runtime              = "python3.9"
+  resource_tags        = var.resource_tags
+  resource_name_suffix = format("%s2", random_string.suffix.result)
 }

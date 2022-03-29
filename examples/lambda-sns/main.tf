@@ -136,7 +136,6 @@ module "lambda" {
   function_name              = var.function_name
   description                = var.description
   local_package_path         = data.archive_file.lambda_package.output_path
-  local_package_base64sha256 = data.archive_file.lambda_package.output_base64sha256
   handler                    = "main.lambda_handler"
   trigger_sqs_enabled        = true
   trigger_sqs_inbound_sns_topics = [

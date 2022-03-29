@@ -137,21 +137,37 @@ resource "aws_lambda_event_source_mapping" "lambda_trigger" {
   function_name    = aws_lambda_function.this.arn
 }
 
+
+variable "package_source_path" {
+  description = "Path to the function's code to create the deployment package."
+  type        = string
+  default     = null
+}
+
+
+data "archive_file" "lambda_package" {
+  count = var.package_source_path == null ? 0 : 1
+
+  type        = "zip"
+  source_dir  = var.package_source_path
+  output_path = "${path.module}/zipped_package.zip"
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LAMBDA
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_lambda_function" "this" {
   function_name                  = local.lambda_name
   description                    = var.description
-  filename                       = var.local_package_path
-  package_type                   = var.package_type
   layers                         = var.layers
   handler                        = var.handler
   role                           = module.execution_role.lambda_execution_role_arn
   memory_size                    = var.memory_size
   runtime                        = var.runtime
   timeout                        = var.timeout
-  source_code_hash               = var.local_package_base64sha256 == null ? filebase64sha256(var.local_package_path) : var.local_package_base64sha256
+  package_type                   = var.package_type
+  filename                       = var.package_source_path == null ? var.local_package_path : data.archive_file.lambda_package[0].output_path
+  source_code_hash               = var.package_source_path == null ? filebase64sha256(var.local_package_path) : data.archive_file.lambda_package[0].output_base64sha256
   reserved_concurrent_executions = var.reserved_concurrent_executions
   publish                        = var.publish
   tags                           = var.resource_tags
