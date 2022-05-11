@@ -99,19 +99,20 @@ module "lambda_vpc" {
 * [`examples/lambda-vpc`][lambda-vpc-test-url]
 * [`examples/lambda-sns`][lambda-sns-test-url]
 
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
 |------|---------|
 | <a name="requirement_terraform"></a> [terraform](#requirement\_terraform) | >= 0.15.0 |
+| <a name="requirement_archive"></a> [archive](#requirement\_archive) | >= 2.0.0 |
 | <a name="requirement_aws"></a> [aws](#requirement\_aws) | >= 3.15 |
 
 ## Providers
 
 | Name | Version |
 |------|---------|
-| <a name="provider_archive"></a> [archive](#provider\_archive) | n/a |
+| <a name="provider_archive"></a> [archive](#provider\_archive) | >= 2.0.0 |
 | <a name="provider_aws"></a> [aws](#provider\_aws) | >= 3.15 |
 
 ## Modules
@@ -140,7 +141,6 @@ module "lambda_vpc" {
 | [archive_file.lambda_package](https://registry.terraform.io/providers/hashicorp/archive/latest/docs/data-sources/file) | data source |
 | [aws_caller_identity.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/caller_identity) | data source |
 | [aws_iam_policy_document.lambda_trigger](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/iam_policy_document) | data source |
-| [aws_region.current](https://registry.terraform.io/providers/hashicorp/aws/latest/docs/data-sources/region) | data source |
 
 ## Inputs
 
@@ -153,7 +153,7 @@ module "lambda_vpc" {
 | <a name="input_event_patterns"></a> [event\_patterns](#input\_event\_patterns) | A List of event patterns described as JSON objects. | `list(string)` | `[]` | no |
 | <a name="input_file_system_config_arn"></a> [file\_system\_config\_arn](#input\_file\_system\_config\_arn) | Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system. | `string` | `null` | no |
 | <a name="input_file_system_config_local_mount_path"></a> [file\_system\_config\_local\_mount\_path](#input\_file\_system\_config\_local\_mount\_path) | Path where the function can access the file system, starting with /mnt/. | `string` | `null` | no |
-| <a name="input_handler"></a> [handler](#input\_handler) | Function entrypoint in your code. | `string` | `""` | no |
+| <a name="input_handler"></a> [handler](#input\_handler) | Function entrypoint in your code. | `string` | `null` | no |
 | <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
 | <a name="input_iam_execution_role_external_name"></a> [iam\_execution\_role\_external\_name](#input\_iam\_execution\_role\_external\_name) | Name of an optional external IAM execution role outside this module. If create\_execution\_role is false, this value is required. | `string` | `""` | no |
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. If omitted, will be generated with function name. | `string` | `null` | no |
@@ -202,8 +202,7 @@ module "lambda_vpc" {
 | <a name="output_trigger_sqs_arn"></a> [trigger\_sqs\_arn](#output\_trigger\_sqs\_arn) | ARN of the optional Trigger-SQS. |
 | <a name="output_trigger_sqs_id"></a> [trigger\_sqs\_id](#output\_trigger\_sqs\_id) | ID of the optional Trigger-SQS. |
 | <a name="output_trigger_sqs_name"></a> [trigger\_sqs\_name](#output\_trigger\_sqs\_name) | Name of the optional Trigger-SQS. |
-
-<!--- END_TF_DOCS --->
+<!-- END_TF_DOCS -->
 
 <!-- AUTHORS -->
 ## Authors
