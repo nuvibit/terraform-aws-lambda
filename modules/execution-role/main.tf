@@ -146,7 +146,7 @@ data "aws_iam_policy_document" "sqs_kms" {
 # ¦ X-RAY - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "aws_xray_write_only_access" {
-  count = var.enable_tracing == true ? 1 : 0
+  count      = var.enable_tracing == true ? 1 : 0
   role       = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
 }
