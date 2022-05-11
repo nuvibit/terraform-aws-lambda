@@ -118,6 +118,30 @@ data "aws_iam_policy_document" "sqs_trigger" {
   }
 }
 
+resource "aws_iam_role_policy" "sqs_kms" {
+  count = var.trigger_sqs_enabled == true && var.kms_key_arn != null ? 1 : 0
+
+  role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
+  policy = data.aws_iam_policy_document.sqs_kms[0].json
+}
+
+data "aws_iam_policy_document" "sqs_kms" {
+  count = var.trigger_sqs_enabled == true && var.kms_key_arn != null ? 1 : 0
+
+  statement {
+    sid    = "SqsTrigger"
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Decrypt"
+    ]
+    resources = [
+      var.trigger_sqs_arn
+    ]
+  }
+}
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ X-RAY - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------

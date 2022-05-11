@@ -81,6 +81,16 @@ variable "enable_tracing" {
   type = bool
 }
 
+variable "kms_key_arn" {
+  description = "ARN of the kms key used to encrypt logs and sqs messages"
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.log_kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.log_kms_key_arn))
+    error_message = "Value must contain ARN, starting with \"arn:aws:kms\"."
+  }
+}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ COMMON
