@@ -75,8 +75,10 @@ resource "random_string" "suffix" {
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ SNS TOPIC
+# ---------------------------------------------------------------------------------------------------------------------
 resource "aws_sns_topic" "triggering_sns" {
-  name = format("%s-feed", var.function_name)
+  name              = format("%s-feed", var.function_name)
+  kms_master_key_id = "alias/aws/sns"
 }
 
 resource "aws_sns_topic_policy" "triggering_sns" {

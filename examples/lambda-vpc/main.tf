@@ -170,6 +170,7 @@ resource "aws_security_group" "allow_https" {
   }
 
   egress {
+    description = "ANY to Public IP"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"
