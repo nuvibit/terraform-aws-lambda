@@ -11,6 +11,10 @@ terraform {
       version               = ">= 3.15"
       configuration_aliases = []
     }
+    archive = {
+      source  = "hashicorp/archive"
+      version = ">= 2.0.0"
+    }
   }
 }
 
@@ -18,15 +22,13 @@ terraform {
 # ¦ DATA
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_caller_identity" "current" {}
-data "aws_region" "current" {}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
   suffix   = title(var.resource_name_suffix)
-  suffix_k = local.suffix == "" ? "" : format("-%s", local.suffix) // Kebap
-  suffix_s = local.suffix == "" ? "" : format("_%s", local.suffix) // Snake
+  suffix_k = local.suffix == "" ? "" : format("-%s", local.suffix)
 
   trigger_sqs_name = format(
     "%s-trigger%s",
@@ -42,12 +44,6 @@ locals {
 
   execution_role_name = format(
     "%s_execution_role%s",
-    var.function_name,
-    local.suffix_k,
-  )
-
-  log_policy_name = format(
-    "%s_log_policy%s",
     var.function_name,
     local.suffix_k,
   )
