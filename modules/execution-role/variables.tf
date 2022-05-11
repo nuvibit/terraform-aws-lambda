@@ -75,6 +75,13 @@ variable "lambda_loggroup_name" {
   default     = "*"
 }
 
+variable "enable_tracing" {
+  description = "If true permissons for aws x ray will be added"
+  default = true
+  type = bool
+}
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ COMMON
 # ---------------------------------------------------------------------------------------------------------------------

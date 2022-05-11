@@ -198,11 +198,6 @@ resource "aws_lambda_function" "this" {
       variables = var.environment_variables
     }
   }
-
-  depends_on = [
-    aws_cloudwatch_log_group.lambda_logs,
-    module.execution_role
-  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -239,6 +234,7 @@ module "execution_role" {
   lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
   resource_tags                               = var.resource_tags
   resource_name_suffix                        = var.resource_name_suffix
+  enable_tracing                              = var.tracing_config != 0 ? true : false
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
