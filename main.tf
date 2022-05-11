@@ -235,7 +235,7 @@ module "execution_role" {
   lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
   resource_tags                               = var.resource_tags
   resource_name_suffix                        = var.resource_name_suffix
-  enable_tracing                              = var.tracing_config != 0 ? true : false
+  enable_tracing                              = var.tracing_mode == null ? true : false
   kms_key_arn                                 = var.kms_key_arn
 }
 
