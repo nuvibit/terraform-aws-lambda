@@ -247,7 +247,7 @@ module "execution_role" {
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = local.loggroup_name
   retention_in_days = var.log_retention_in_days
-  kms_key_id        = var.kms_key_arn
+  #kms_key_id        = var.kms_key_arn
   kms_key_id        = null
   tags              = var.resource_tags
 }
