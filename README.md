@@ -30,7 +30,23 @@
 <!-- USAGE -->
 ## Usage
 
-### Lambda Function with local package
+### Lambda Function with local package and enabled tracing
+```hcl
+module "lambda" {
+  source  = "nuvibit/lambda/aws"
+  version = "~> 1.0"
+
+  function_name      = "my_lambda"
+  description        = "my lambda function"
+  handler            = "main.lambda_handler"
+  runtime            = "python3.9"
+  local_package_path = "../my_lambda.zip"
+  tracing_mode         = "Active"
+}
+
+```
+
+### Lambda Function with encrypted SQS trigger and encrypted lambda logs
 ```hcl
 module "lambda" {
   source  = "nuvibit/lambda/aws"
@@ -42,11 +58,14 @@ module "lambda" {
   runtime            = "python3.9"
   local_package_path = "../my_lambda.zip"
 
-  resource_tags = {
-    CostCenter = "project-1"
-  }
+  enable_encryption    = true
+  kms_key_arn          = aws_kms_key.example.arn
+
+  trigger_sqs_enabled = true
 }
+
 ```
+If a kms_key_arn is provided enable_encryption has to be set to true. Otherwise the lambda function won't have the permissions to decrypt the data in the SQS queue.
 
 ### Lambda Function in VPC
 ```hcl
