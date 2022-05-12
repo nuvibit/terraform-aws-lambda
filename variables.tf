@@ -168,7 +168,7 @@ variable "tracing_mode" {
   If no tracing header is received, Lambda will call X-Ray for a tracing decision.
   EOT
   type        = string
-  default     = null
+  default     = "Active"
 
   validation {
     condition     = var.tracing_mode == null ? true : contains(["PassThrough", "Active"], var.tracing_mode)
