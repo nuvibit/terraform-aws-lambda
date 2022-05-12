@@ -65,7 +65,7 @@ module "lambda" {
 }
 
 ```
-If a kms_key_arn is provided enable_encryption has to be set to true. Otherwise the lambda function won't have the permissions to decrypt the data in the SQS queue.
+If you want to enable encryption you have to set enable_encryption to true and provide a kms_key_arn. Otherwise the lambda function won't have the permissions to decrypt the data in the SQS queue.
 
 ### Lambda Function in VPC
 ```hcl
