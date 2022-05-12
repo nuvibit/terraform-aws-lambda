@@ -173,19 +173,11 @@ resource "aws_lambda_function" "this" {
 
   dynamic "tracing_config" {
     # add tracing_config when tracing_mode is defined
-    for_each = [true]
+    for_each = var.tracing_mode == null ? [] : [true]
     content {
       mode = var.tracing_mode
     }
   }
-
-  # dynamic "tracing_config" {
-  #   # add tracing_config when tracing_mode is defined
-  #   for_each = var.tracing_mode == null ? [] : [true]
-  #   content {
-  #     mode = var.tracing_mode
-  #   }
-  # }
 
   dynamic "file_system_config" {
     # add file_system_config when file_system_config_arn and file_system_config_local_mount_path are defined
