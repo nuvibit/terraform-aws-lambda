@@ -170,7 +170,7 @@ resource "aws_lambda_function" "this" {
       security_group_ids = var.vpc_security_group_ids
     }
   }
-  
+
   dynamic "tracing_config" {
     # add tracing_config when tracing_mode is defined
     for_each = [true]
