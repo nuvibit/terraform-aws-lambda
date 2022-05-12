@@ -195,6 +195,11 @@ resource "aws_lambda_function" "this" {
       variables = var.environment_variables
     }
   }
+  
+  depends_on = [
+    aws_cloudwatch_log_group.lambda_logs,
+    module.execution_role
+  ]
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
