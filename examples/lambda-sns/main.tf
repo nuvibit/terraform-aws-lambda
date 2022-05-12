@@ -206,6 +206,7 @@ module "lambda" {
   timeout              = 360
   runtime              = "python3.9"
   kms_key_arn          = aws_kms_key.example.arn
+  enable_encryption    = true
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
   tracing_mode         = "Active"
