@@ -329,7 +329,7 @@ variable "log_retention_in_days" {
 # ¦ KMS KEY
 # ---------------------------------------------------------------------------------------------------------------------
 variable "kms_key_arn" {
-  description = "KMS Key to be used to encrypt logs and if enabled, sqs messages"
+  description = "KMS Key to be used to encrypt logs and if enabled, sqs messages. requires enable_encryption to be true."
   type        = string
   default     = null
 
@@ -338,6 +338,13 @@ variable "kms_key_arn" {
     error_message = "Value must contain ARN, starting with \"arn:aws:kms\"."
   }
 }
+
+variable "enable_encryption" {
+  description = "If true permissons for kms policies will be attached to the execution role. Requires kms_key_arn to be set."
+  default     = false
+  type        = bool
+}
+
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ COMMON
