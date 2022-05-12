@@ -92,6 +92,7 @@ module "lambda" {
   runtime              = "python3.9"
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
+  tracing_mode         = "Active"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

@@ -208,6 +208,7 @@ module "lambda" {
   kms_key_arn          = aws_kms_key.example.arn
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
+  tracing_mode         = "Active"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
