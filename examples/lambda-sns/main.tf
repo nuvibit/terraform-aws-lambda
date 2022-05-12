@@ -78,6 +78,7 @@ resource "random_string" "suffix" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_key" "example" {
   description = format("%s-key", var.function_name)
+  enable_key_rotation = true
 }
 
 data "aws_iam_policy_document" "key_policy" {
