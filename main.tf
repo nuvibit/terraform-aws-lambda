@@ -171,8 +171,12 @@ resource "aws_lambda_function" "this" {
     }
   }
   
-  tracing_config {
-    mode = var.tracing_config
+  dynamic "tracing_config" {
+    # add tracing_config when tracing_mode is defined
+    for_each = [true]
+    content {
+      mode = var.tracing_mode
+    }
   }
 
   # dynamic "tracing_config" {
