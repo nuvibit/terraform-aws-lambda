@@ -83,7 +83,7 @@ resource "aws_kms_key" "example" {
 
 data "aws_iam_policy_document" "key_policy" {
   statement {
-    sid = "Allow KMS use in current account"
+    sid    = "Allow KMS use in current account"
     effect = "Allow"
     actions = [
       "kms:*"
@@ -99,7 +99,7 @@ data "aws_iam_policy_document" "key_policy" {
   }
 
   statement {
-    sid = "Allow KMS use for SNS"
+    sid    = "Allow KMS use for SNS"
     effect = "Allow"
     actions = [
       "kms:GenerateDataKey",
