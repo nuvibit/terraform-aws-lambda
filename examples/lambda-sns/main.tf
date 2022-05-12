@@ -77,7 +77,7 @@ resource "random_string" "suffix" {
 # ¦ KMS KEY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_kms_key" "example" {
-  description = format("%s-key", var.function_name)
+  description         = format("%s-key", var.function_name)
   enable_key_rotation = true
 }
 
