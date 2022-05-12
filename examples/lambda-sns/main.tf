@@ -74,11 +74,56 @@ resource "random_string" "suffix" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# ¦ KMS KEY
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_kms_key" "example" {
+  description = format("%s-key", var.function_name)
+}
+
+data "aws_iam_policy_document" "key_policy" {
+  statement {
+    sid = "Allow KMS use in current account"
+    effect = "Allow"
+    actions = [
+      "kms:*"
+    ]
+    resources = [
+      aws_kms_key.example.arn
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+
+  statement {
+    sid = "Allow KMS use for SNS"
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyPair",
+      "kms:GenerateDataKeyPairWithoutPlaintext",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:Decrypt"
+    ]
+    resources = [
+      aws_kms_key.example.arn
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # ¦ SNS TOPIC
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_sns_topic" "triggering_sns" {
   name              = format("%s-feed", var.function_name)
-  kms_master_key_id = "alias/aws/sns"
+  kms_master_key_id = aws_kms_key.example.key_id
 }
 
 resource "aws_sns_topic_policy" "triggering_sns" {
@@ -159,6 +204,7 @@ module "lambda" {
   memory_size          = 128
   timeout              = 360
   runtime              = "python3.9"
+  kms_key_arn          = aws_kms_key.example.arn
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
 }
