@@ -181,6 +181,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. | `string` | n/a | yes |
 | <a name="input_create_execution_role"></a> [create\_execution\_role](#input\_create\_execution\_role) | Controls if IAM execution role resources should be created. | `bool` | `true` | no |
+| <a name="input_enable_encryption"></a> [enable\_encryption](#input\_enable\_encryption) | If true permissons for kms policies will be attached to the execution role. Requires kms\_key\_arn. | `bool` | `true` | no |
 | <a name="input_enable_tracing"></a> [enable\_tracing](#input\_enable\_tracing) | If true permissons for aws x ray will be added | `bool` | `true` | no |
 | <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
 | <a name="input_iam_execution_role_external_name"></a> [iam\_execution\_role\_external\_name](#input\_iam\_execution\_role\_external\_name) | Name of an optional external IAM execution role outside this module. If create\_execution\_role is false, this value is required. | `string` | `null` | no |
