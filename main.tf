@@ -170,7 +170,7 @@ resource "aws_lambda_function" "this" {
       security_group_ids = var.vpc_security_group_ids
     }
   }
-  
+
   tracing_config {
     mode = var.tracing_config
   }
