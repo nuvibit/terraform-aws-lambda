@@ -114,7 +114,7 @@ data "aws_iam_policy_document" "key_policy" {
 
     principals {
       type        = "Service"
-      identifiers = ["sns.amazonaws.com"]
+      identifiers = ["sns.amazonaws.com", "logs.${data.aws_region.current.name}"]
     }
   }
 }
