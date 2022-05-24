@@ -59,7 +59,7 @@ data "aws_iam_policy_document" "lambda" {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy_attachment" "lambda" {
   count = var.create_execution_role ? length(var.iam_execution_policy_arns) : 0
-  
+
   role       = aws_iam_role.lambda[0].name
   policy_arn = var.iam_execution_policy_arns[count.index]
 }
