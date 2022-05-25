@@ -118,7 +118,7 @@ data "aws_iam_policy_document" "key_policy" {
     }
   }
 
-    statement {
+  statement {
     sid    = "Allow KMS use for CW Logs"
     effect = "Allow"
     actions = [
