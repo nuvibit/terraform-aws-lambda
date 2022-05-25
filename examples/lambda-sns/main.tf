@@ -137,7 +137,7 @@ data "aws_iam_policy_document" "key_policy" {
 
     principals {
       type        = "Service"
-      identifiers = ["logs.${data.aws_region.current.name}"]
+      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
     }
   }
 }
