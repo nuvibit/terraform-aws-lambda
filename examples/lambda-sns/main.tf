@@ -110,7 +110,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:Decrypt"
     ]
     resources = [
-      aws_kms_key.example.arn
+      "*"
     ]
 
     principals {
@@ -132,7 +132,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:Decrypt"
     ]
     resources = [
-      aws_kms_key.example.arn
+      "*"
     ]
 
     principals {
