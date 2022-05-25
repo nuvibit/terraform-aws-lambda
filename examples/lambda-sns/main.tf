@@ -95,7 +95,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:*"
     ]
     resources = [
-      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alias/${var.function_name}-key"
+      "*"
     ]
 
     principals {
