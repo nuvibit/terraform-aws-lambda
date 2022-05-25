@@ -83,7 +83,7 @@ resource "aws_kms_key" "example" {
 }
 
 resource "aws_kms_alias" "example" {
-  name = format("alias/%s-key", var.function_name)
+  name          = format("alias/%s-key", var.function_name)
   target_key_id = aws_kms_key.example.key_id
 }
 
