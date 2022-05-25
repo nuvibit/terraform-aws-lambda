@@ -82,6 +82,11 @@ resource "aws_kms_key" "example" {
   policy              = data.aws_iam_policy_document.key_policy.json
 }
 
+resource "aws_kms_alias" "example" {
+  name = format("alias/%s-key", var.function_name)
+  target_key_id = aws_kms_key.example.key_id
+}
+
 data "aws_iam_policy_document" "key_policy" {
   statement {
     sid    = "Allow KMS use in current account"
@@ -90,7 +95,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:*"
     ]
     resources = [
-      "*"
+      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alias/${var.function_name}-key"
     ]
 
     principals {
@@ -110,7 +115,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:Decrypt"
     ]
     resources = [
-      "*"
+      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alias/${var.function_name}-key"
     ]
 
     principals {
@@ -132,7 +137,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:Decrypt"
     ]
     resources = [
-      "*"
+      "arn:aws:kms:${data.aws_region.current.name}:${data.aws_caller_identity.current.account_id}:alias/${var.function_name}-key"
     ]
 
     principals {
