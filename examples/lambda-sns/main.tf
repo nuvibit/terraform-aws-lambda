@@ -114,7 +114,30 @@ data "aws_iam_policy_document" "key_policy" {
 
     principals {
       type        = "Service"
-      identifiers = ["sns.amazonaws.com", "logs.${data.aws_region.current.name}"]
+      identifiers = ["sns.amazonaws.com"]
+    }
+  }
+
+    statement {
+    sid    = "Allow KMS use for SNS"
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyPair",
+      "kms:GenerateDataKeyPairWithoutPlaintext",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:Encrypt",
+      "kms:ReEncrypt",
+      "kms:Decrypt",
+      
+    ]
+    resources = [
+      aws_kms_key.example.arn
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${data.aws_region.current.name}"]
     }
   }
 }
