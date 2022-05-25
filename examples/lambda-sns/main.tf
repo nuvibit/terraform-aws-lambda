@@ -128,8 +128,7 @@ data "aws_iam_policy_document" "key_policy" {
       "kms:GenerateDataKeyWithoutPlaintext",
       "kms:Encrypt",
       "kms:ReEncrypt",
-      "kms:Decrypt",
-
+      "kms:Decrypt"
     ]
     resources = [
       aws_kms_key.example.arn
