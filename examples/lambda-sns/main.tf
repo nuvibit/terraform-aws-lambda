@@ -119,7 +119,7 @@ data "aws_iam_policy_document" "key_policy" {
   }
 
     statement {
-    sid    = "Allow KMS use for SNS"
+    sid    = "Allow KMS use for CW Logs"
     effect = "Allow"
     actions = [
       "kms:GenerateDataKey",
