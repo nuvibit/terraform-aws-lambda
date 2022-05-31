@@ -1,3 +1,14 @@
+# Changelog
+
+All notable changes to this project will be documented in this file.
+
+# [1.5.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.4.1...1.5.0) (2022-05-31)
+
+
+### Features
+
+* enable xray tracing for lambda functions and implement tfsec best practices ([dbc870f](https://github.com/nuvibit/terraform-aws-lambda/commit/dbc870ff32d85716d87414820303945e74018ea0))
+
 ## [1.4.1](https://github.com/nuvibit/terraform-aws-lambda/compare/1.4.0...1.4.1) (2022-03-29)
 
 
