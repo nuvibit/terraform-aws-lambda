@@ -68,6 +68,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 # ¦ LAMBDA LOGGING - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy" "lambda_logs" {
+  name   = "AllowLambdaDebugLogs"
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.lambda_logs.json
 }
@@ -97,6 +98,7 @@ data "aws_iam_policy_document" "lambda_logs" {
 resource "aws_iam_role_policy" "sqs_trigger" {
   count = var.trigger_sqs_enabled == true ? 1 : 0
 
+  name   = "AllowTriggerSqs"
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.sqs_trigger[0].json
 }
@@ -116,4 +118,38 @@ data "aws_iam_policy_document" "sqs_trigger" {
       var.trigger_sqs_arn
     ]
   }
+}
+
+resource "aws_iam_role_policy" "sqs_kms" {
+  count = var.enable_encryption ? 1 : 0
+
+  name   = "AllowKmsCmkAccess"
+  role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
+  policy = data.aws_iam_policy_document.sqs_kms[0].json
+}
+
+data "aws_iam_policy_document" "sqs_kms" {
+  count = var.enable_encryption ? 1 : 0
+
+  statement {
+    sid    = "SqsTrigger"
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:Decrypt"
+    ]
+    resources = [
+      var.trigger_sqs_arn
+    ]
+  }
+}
+
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ X-RAY - IAM POLICY
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_iam_role_policy_attachment" "aws_xray_write_only_access" {
+  count      = var.enable_tracing == true ? 1 : 0
+  role       = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
+  policy_arn = "arn:aws:iam::aws:policy/AWSXrayWriteOnlyAccess"
 }

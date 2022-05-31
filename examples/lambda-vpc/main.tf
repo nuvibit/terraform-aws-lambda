@@ -92,6 +92,7 @@ module "lambda" {
   runtime              = "python3.9"
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
+  tracing_mode         = "Active"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -170,6 +171,7 @@ resource "aws_security_group" "allow_https" {
   }
 
   egress {
+    description = "ANY to Public IP"
     from_port   = 0
     to_port     = 0
     protocol    = "-1"

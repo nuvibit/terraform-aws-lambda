@@ -30,7 +30,23 @@
 <!-- USAGE -->
 ## Usage
 
-### Lambda Function with local package
+### Lambda Function with local package and enabled tracing
+```hcl
+module "lambda" {
+  source  = "nuvibit/lambda/aws"
+  version = "~> 1.0"
+
+  function_name      = "my_lambda"
+  description        = "my lambda function"
+  handler            = "main.lambda_handler"
+  runtime            = "python3.9"
+  local_package_path = "../my_lambda.zip"
+  tracing_mode         = "Active"
+}
+
+```
+
+### Lambda Function with encrypted SQS trigger and encrypted lambda logs
 ```hcl
 module "lambda" {
   source  = "nuvibit/lambda/aws"
@@ -42,11 +58,14 @@ module "lambda" {
   runtime            = "python3.9"
   local_package_path = "../my_lambda.zip"
 
-  resource_tags = {
-    CostCenter = "project-1"
-  }
+  enable_encryption    = true
+  kms_key_arn          = aws_kms_key.example.arn
+
+  trigger_sqs_enabled = true
 }
+
 ```
+If you want to enable encryption you have to set enable_encryption to true and provide a kms_key_arn.
 
 ### Lambda Function in VPC
 ```hcl
@@ -149,6 +168,7 @@ module "lambda_vpc" {
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | Unique name for your Lambda Function. | `string` | n/a | yes |
 | <a name="input_create_execution_role"></a> [create\_execution\_role](#input\_create\_execution\_role) | Controls if IAM execution role should be created. If set to false an iam execute role ARN for 'iam\_execution\_role\_external\_arn' needs to be provided. | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | Description of what your Lambda Function does. | `string` | `""` | no |
+| <a name="input_enable_encryption"></a> [enable\_encryption](#input\_enable\_encryption) | If true permissons for kms policies will be attached to the execution role. Requires kms\_key\_arn to be set. | `bool` | `false` | no |
 | <a name="input_environment_variables"></a> [environment\_variables](#input\_environment\_variables) | Map of environment variables that are accessible from the function code during execution. | `map(string)` | `{}` | no |
 | <a name="input_event_patterns"></a> [event\_patterns](#input\_event\_patterns) | A List of event patterns described as JSON objects. | `list(string)` | `[]` | no |
 | <a name="input_file_system_config_arn"></a> [file\_system\_config\_arn](#input\_file\_system\_config\_arn) | Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system. | `string` | `null` | no |
@@ -159,9 +179,9 @@ module "lambda_vpc" {
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. If omitted, will be generated with function name. | `string` | `null` | no |
 | <a name="input_iam_execution_role_path"></a> [iam\_execution\_role\_path](#input\_iam\_execution\_role\_path) | Path of the IAM role. | `string` | `null` | no |
 | <a name="input_iam_execution_role_permissions_boundary_arn"></a> [iam\_execution\_role\_permissions\_boundary\_arn](#input\_iam\_execution\_role\_permissions\_boundary\_arn) | ARN of the policy that is used to set the permissions boundary for the role. | `string` | `null` | no |
+| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | KMS Key to be used to encrypt logs and if enabled, sqs messages. requires enable\_encryption to be true. | `string` | `null` | no |
 | <a name="input_layers"></a> [layers](#input\_layers) | List of Lambda Layer Version ARNs (maximum of 5) to attach to your Lambda Function. | `list(string)` | `null` | no |
 | <a name="input_local_package_path"></a> [local\_package\_path](#input\_local\_package\_path) | Will be deprecated. Path to the function's deployment package within the local filesystem. | `string` | `null` | no |
-| <a name="input_log_kms_key_arn"></a> [log\_kms\_key\_arn](#input\_log\_kms\_key\_arn) | The ARN of the KMS Key to use when encrypting log data. <br>Please note, after the AWS KMS CMK is disassociated from the log group, AWS CloudWatch Logs stops encrypting newly ingested data for the log group. <br>All previously ingested data remains encrypted, and AWS CloudWatch Logs requires permissions for the CMK whenever the encrypted data is requested. | `string` | `null` | no |
 | <a name="input_log_retention_in_days"></a> [log\_retention\_in\_days](#input\_log\_retention\_in\_days) | Specifies the number of days you want to retain log events in the specified log group. | `number` | `null` | no |
 | <a name="input_memory_size"></a> [memory\_size](#input\_memory\_size) | Amount of memory in MB your Lambda Function can use at runtime. | `number` | `128` | no |
 | <a name="input_package_source_path"></a> [package\_source\_path](#input\_package\_source\_path) | Path to the function's code to create the deployment package. | `string` | `null` | no |

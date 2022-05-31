@@ -75,6 +75,29 @@ variable "lambda_loggroup_name" {
   default     = "*"
 }
 
+variable "enable_tracing" {
+  description = "If true permissons for aws x ray will be added"
+  default     = true
+  type        = bool
+}
+
+variable "enable_encryption" {
+  description = "If true permissons for kms policies will be attached to the execution role. Requires kms_key_arn."
+  default     = true
+  type        = bool
+}
+
+variable "kms_key_arn" {
+  description = "ARN of the kms key used to encrypt logs and sqs messages"
+  type        = string
+  default     = null
+
+  validation {
+    condition     = var.kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.kms_key_arn))
+    error_message = "Value must contain ARN, starting with \"arn:aws:kms\"."
+  }
+}
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ COMMON
 # ---------------------------------------------------------------------------------------------------------------------

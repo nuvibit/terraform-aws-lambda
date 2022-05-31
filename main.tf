@@ -68,6 +68,7 @@ resource "aws_sqs_queue" "lambda_trigger" {
   count = var.trigger_sqs_enabled == true ? 1 : 0
 
   name                       = local.trigger_sqs_name
+  kms_master_key_id          = var.kms_key_arn
   visibility_timeout_seconds = var.timeout
   tags                       = var.resource_tags
 }
@@ -235,6 +236,9 @@ module "execution_role" {
   lambda_loggroup_name                        = aws_cloudwatch_log_group.lambda_logs.name
   resource_tags                               = var.resource_tags
   resource_name_suffix                        = var.resource_name_suffix
+  enable_tracing                              = var.tracing_mode == null ? true : false
+  kms_key_arn                                 = var.kms_key_arn
+  enable_encryption                           = var.enable_encryption
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
@@ -243,7 +247,7 @@ module "execution_role" {
 resource "aws_cloudwatch_log_group" "lambda_logs" {
   name              = local.loggroup_name
   retention_in_days = var.log_retention_in_days
-  kms_key_id        = var.log_kms_key_arn
+  kms_key_id        = var.kms_key_arn
   tags              = var.resource_tags
 }
 

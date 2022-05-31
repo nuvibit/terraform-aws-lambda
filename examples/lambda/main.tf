@@ -94,6 +94,7 @@ data "aws_iam_policy_document" "list_users" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LAMBDA
 # ---------------------------------------------------------------------------------------------------------------------
+#tfsec:ignore:aws-lambda-enable-tracing
 module "lambda" {
   # source  = "nuvibit/lambda/aws"
   # version = "~> 1.0"
@@ -117,4 +118,5 @@ module "lambda" {
   runtime              = "python3.9"
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
+  tracing_mode         = "PassThrough"
 }

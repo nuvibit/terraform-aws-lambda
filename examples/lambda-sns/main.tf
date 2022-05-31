@@ -74,9 +74,85 @@ resource "random_string" "suffix" {
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
+# ¦ KMS KEY
+# ---------------------------------------------------------------------------------------------------------------------
+resource "aws_kms_key" "example" {
+  description         = format("%s-key", var.function_name)
+  enable_key_rotation = true
+  policy              = data.aws_iam_policy_document.key_policy.json
+}
+
+resource "aws_kms_alias" "example" {
+  name          = format("alias/%s-key", var.function_name)
+  target_key_id = aws_kms_key.example.key_id
+}
+
+data "aws_iam_policy_document" "key_policy" {
+  statement {
+    sid    = "Allow KMS use in current account"
+    effect = "Allow"
+    actions = [
+      "kms:*"
+    ]
+    resources = [
+      "*"
+    ]
+
+    principals {
+      type        = "AWS"
+      identifiers = ["arn:aws:iam::${data.aws_caller_identity.current.account_id}:root"]
+    }
+  }
+
+  statement {
+    sid    = "Allow KMS use for SNS"
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyPair",
+      "kms:GenerateDataKeyPairWithoutPlaintext",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:Decrypt"
+    ]
+    resources = [
+      "*"
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["sns.amazonaws.com"]
+    }
+  }
+
+  statement {
+    sid    = "Allow KMS use for CW Logs"
+    effect = "Allow"
+    actions = [
+      "kms:GenerateDataKey",
+      "kms:GenerateDataKeyPair",
+      "kms:GenerateDataKeyPairWithoutPlaintext",
+      "kms:GenerateDataKeyWithoutPlaintext",
+      "kms:Encrypt",
+      "kms:ReEncrypt",
+      "kms:Decrypt"
+    ]
+    resources = [
+      "*"
+    ]
+
+    principals {
+      type        = "Service"
+      identifiers = ["logs.${data.aws_region.current.name}.amazonaws.com"]
+    }
+  }
+}
+
+# ---------------------------------------------------------------------------------------------------------------------
 # ¦ SNS TOPIC
+# ---------------------------------------------------------------------------------------------------------------------
 resource "aws_sns_topic" "triggering_sns" {
-  name = format("%s-feed", var.function_name)
+  name              = format("%s-feed", var.function_name)
+  kms_master_key_id = aws_kms_key.example.key_id
 }
 
 resource "aws_sns_topic_policy" "triggering_sns" {
@@ -157,8 +233,11 @@ module "lambda" {
   memory_size          = 128
   timeout              = 360
   runtime              = "python3.9"
+  kms_key_arn          = aws_kms_key.example.arn
+  enable_encryption    = true
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
+  tracing_mode         = "Active"
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
