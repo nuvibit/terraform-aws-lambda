@@ -68,7 +68,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 # ¦ LAMBDA LOGGING - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy" "lambda_logs" {
-  name   = "AllowLambdaDebugLogs"
+  name   = var.create_execution_role == true ? "AllowLambdaDebugLogs" : format("AllowLambdaDebugLogsFor_%s", var.function_name)
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.lambda_logs.json
 }
@@ -98,7 +98,7 @@ data "aws_iam_policy_document" "lambda_logs" {
 resource "aws_iam_role_policy" "sqs_trigger" {
   count = var.trigger_sqs_enabled == true ? 1 : 0
 
-  name   = "AllowTriggerSqs"
+  name   = var.create_execution_role == true ? "AllowTriggerSqs" : format("AllowTriggerSqsFor_%s", var.function_name)
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.sqs_trigger[0].json
 }
@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "sqs_trigger" {
 resource "aws_iam_role_policy" "sqs_kms" {
   count = var.enable_encryption ? 1 : 0
 
-  name   = "AllowKmsCmkAccess"
+  name   = var.create_execution_role == true ? "AllowKmsCmkAccess" : format("AllowKmsCmkAccessFor_%s", var.function_name)
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.sqs_kms[0].json
 }
