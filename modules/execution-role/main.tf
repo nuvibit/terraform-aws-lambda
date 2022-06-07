@@ -68,7 +68,7 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 # ¦ LAMBDA LOGGING - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role_policy" "lambda_context" {
-  name   = var.create_execution_role == true ? "AllowLambdaContext" : format("AllowLambdaContextFor_%s", var.function_name)
+  name   = var.create_execution_role == true ? "AllowLambdaContext" : format("AllowLambdaContextFor%s", replace(title(replace(replace(var.function_name, "-", " "), "_", " ")), " ", ""))
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.lambda_context.json
 }
