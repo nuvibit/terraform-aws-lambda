@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.6.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.5.0...1.6.0) (2022-06-08)
+
+
+### Features
+
+* add support for architecture, update runtimes, minor fixes ([#21](https://github.com/nuvibit/terraform-aws-lambda/issues/21)) ([d933fe2](https://github.com/nuvibit/terraform-aws-lambda/commit/d933fe2166949feee7688842ece12cdd26a40fa9))
+
 # [1.5.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.4.1...1.5.0) (2022-05-31)
 
 
