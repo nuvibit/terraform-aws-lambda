@@ -89,9 +89,9 @@ variable "runtime" {
 
   validation {
     condition = var.runtime == null ? true : contains([
-      "nodejs", "nodejs4.3", "nodejs6.10", 
+      "nodejs", "nodejs4.3", "nodejs6.10",
       "nodejs8.10", "nodejs10.x", "nodejs12.x",
-      "nodejs14.x", "nodejs16.x","java8", "java8.al2",
+      "nodejs14.x", "nodejs16.x", "java8", "java8.al2",
       "java11", "python2.7", "python3.6",
       "python3.7", "python3.8", "python3.9",
       "dotnetcore1.0", "dotnetcore2.0", "dotnetcore2.1",
@@ -109,7 +109,7 @@ variable "architecture" {
   default     = "x86_64"
 
   validation {
-    condition = var.architecture == null ? true : contains(["x86_64", "arm64"], var.architecture)
+    condition     = var.architecture == null ? true : contains(["x86_64", "arm64"], var.architecture)
     error_message = "Identifier of the function's architecture must be supported by AWS Lambda."
   }
 }
