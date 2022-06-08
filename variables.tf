@@ -85,20 +85,31 @@ variable "timeout" {
 variable "runtime" {
   description = "Identifier of the function's runtime. See Runtimes for valid values."
   type        = string
-  default     = null
 
   validation {
-    condition = var.runtime == null ? true : contains([
+    condition = contains([
       "nodejs", "nodejs4.3", "nodejs6.10",
       "nodejs8.10", "nodejs10.x", "nodejs12.x",
-      "nodejs14.x", "java8", "java8.al2",
+      "nodejs14.x", "nodejs16.x", "java8", "java8.al2",
       "java11", "python2.7", "python3.6",
       "python3.7", "python3.8", "python3.9",
       "dotnetcore1.0", "dotnetcore2.0", "dotnetcore2.1",
-      "dotnetcore3.1", "nodejs4.3-edge", "go1.x",
+      "dotnetcore3.1", "dotnet6",
+      "nodejs4.3-edge", "go1.x",
       "ruby2.5", "ruby2.7", "provided", "provided.al2"
     ], var.runtime)
     error_message = "Identifier of the function's runtime must be supported by AWS Lambda."
+  }
+}
+
+variable "architecture" {
+  description = "Instruction set architecture for your Lambda function. Valid values are 'x86_64' and 'arm64'."
+  type        = string
+  default     = "x86_64"
+
+  validation {
+    condition     = contains(["x86_64", "arm64"], var.architecture)
+    error_message = "Identifier of the function's architecture must be supported by AWS Lambda."
   }
 }
 
@@ -175,6 +186,7 @@ variable "tracing_mode" {
     error_message = "Value must be \"PassThrough\" or \"Active\"."
   }
 }
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LAMBDA TRIGGER
 # ---------------------------------------------------------------------------------------------------------------------
@@ -344,7 +356,6 @@ variable "enable_encryption" {
   default     = false
   type        = bool
 }
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ COMMON
