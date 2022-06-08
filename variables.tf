@@ -57,7 +57,7 @@ variable "package_source_path" {
 variable "handler" {
   description = "Function entrypoint in your code."
   type        = string
-  default     = null
+  default     = ""
 }
 
 variable "memory_size" {
@@ -89,16 +89,28 @@ variable "runtime" {
 
   validation {
     condition = var.runtime == null ? true : contains([
-      "nodejs", "nodejs4.3", "nodejs6.10",
+      "nodejs", "nodejs4.3", "nodejs6.10", 
       "nodejs8.10", "nodejs10.x", "nodejs12.x",
-      "nodejs14.x", "java8", "java8.al2",
+      "nodejs14.x", "nodejs16.x","java8", "java8.al2",
       "java11", "python2.7", "python3.6",
       "python3.7", "python3.8", "python3.9",
       "dotnetcore1.0", "dotnetcore2.0", "dotnetcore2.1",
-      "dotnetcore3.1", "nodejs4.3-edge", "go1.x",
+      "dotnetcore3.1", "dotnet6",
+      "nodejs4.3-edge", "go1.x",
       "ruby2.5", "ruby2.7", "provided", "provided.al2"
     ], var.runtime)
     error_message = "Identifier of the function's runtime must be supported by AWS Lambda."
+  }
+}
+
+variable "architecture" {
+  description = "Instruction set architecture for your Lambda function. Valid values are 'x86_64' and 'arm64'."
+  type        = string
+  default     = "x86_64"
+
+  validation {
+    condition = var.architecture == null ? true : contains(["x86_64", "arm64"], var.architecture)
+    error_message = "Identifier of the function's architecture must be supported by AWS Lambda."
   }
 }
 
@@ -325,26 +337,20 @@ variable "log_retention_in_days" {
   }
 }
 
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ KMS KEY
-# ---------------------------------------------------------------------------------------------------------------------
-variable "kms_key_arn" {
-  description = "KMS Key to be used to encrypt logs and if enabled, sqs messages. requires enable_encryption to be true."
+variable "log_kms_key_arn" {
+  description = <<EOT
+The ARN of the KMS Key to use when encrypting log data. 
+Please note, after the AWS KMS CMK is disassociated from the log group, AWS CloudWatch Logs stops encrypting newly ingested data for the log group. 
+All previously ingested data remains encrypted, and AWS CloudWatch Logs requires permissions for the CMK whenever the encrypted data is requested.
+  EOT
   type        = string
   default     = null
 
   validation {
-    condition     = var.kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.kms_key_arn))
+    condition     = var.log_kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.log_kms_key_arn))
     error_message = "Value must contain ARN, starting with \"arn:aws:kms\"."
   }
 }
-
-variable "enable_encryption" {
-  description = "If true permissons for kms policies will be attached to the execution role. Requires kms_key_arn to be set."
-  default     = false
-  type        = bool
-}
-
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ COMMON

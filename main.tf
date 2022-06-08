@@ -153,6 +153,7 @@ resource "aws_lambda_function" "this" {
   role                           = module.execution_role.lambda_execution_role_arn
   memory_size                    = var.memory_size
   runtime                        = var.runtime
+  architectures                  = [var.architecture]
   timeout                        = var.timeout
   package_type                   = var.package_type
   filename                       = var.package_source_path == null ? var.local_package_path : data.archive_file.lambda_package[0].output_path
