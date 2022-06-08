@@ -109,7 +109,7 @@ variable "architecture" {
   default     = "x86_64"
 
   validation {
-    condition     = var.architecture == null ? true : contains(["x86_64", "arm64"], var.architecture)
+    condition     = contains(["x86_64", "arm64"], var.architecture)
     error_message = "Identifier of the function's architecture must be supported by AWS Lambda."
   }
 }
