@@ -174,7 +174,7 @@ module "lambda_vpc" {
 | <a name="input_event_patterns"></a> [event\_patterns](#input\_event\_patterns) | A List of event patterns described as JSON objects. | `list(string)` | `[]` | no |
 | <a name="input_file_system_config_arn"></a> [file\_system\_config\_arn](#input\_file\_system\_config\_arn) | Amazon Resource Name (ARN) of the Amazon EFS Access Point that provides access to the file system. | `string` | `null` | no |
 | <a name="input_file_system_config_local_mount_path"></a> [file\_system\_config\_local\_mount\_path](#input\_file\_system\_config\_local\_mount\_path) | Path where the function can access the file system, starting with /mnt/. | `string` | `null` | no |
-| <a name="input_handler"></a> [handler](#input\_handler) | Function entrypoint in your code. | `string` | `""` | no |
+| <a name="input_handler"></a> [handler](#input\_handler) | Function entrypoint in your code. | `string` | `null` | no |
 | <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
 | <a name="input_iam_execution_role_external_name"></a> [iam\_execution\_role\_external\_name](#input\_iam\_execution\_role\_external\_name) | Name of an optional external IAM execution role outside this module. If create\_execution\_role is false, this value is required. | `string` | `""` | no |
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. If omitted, will be generated with function name. | `string` | `null` | no |
