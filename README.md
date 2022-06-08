@@ -166,6 +166,7 @@ module "lambda_vpc" {
 | Name | Description | Type | Default | Required |
 |------|-------------|------|---------|:--------:|
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | Unique name for your Lambda Function. | `string` | n/a | yes |
+| <a name="input_runtime"></a> [runtime](#input\_runtime) | Identifier of the function's runtime. See Runtimes for valid values. | `string` | n/a | yes |
 | <a name="input_architecture"></a> [architecture](#input\_architecture) | Instruction set architecture for your Lambda function. Valid values are 'x86\_64' and 'arm64'. | `string` | `"x86_64"` | no |
 | <a name="input_create_execution_role"></a> [create\_execution\_role](#input\_create\_execution\_role) | Controls if IAM execution role should be created. If set to false an iam execute role ARN for 'iam\_execution\_role\_external\_arn' needs to be provided. | `bool` | `true` | no |
 | <a name="input_description"></a> [description](#input\_description) | Description of what your Lambda Function does. | `string` | `""` | no |
@@ -191,7 +192,6 @@ module "lambda_vpc" {
 | <a name="input_reserved_concurrent_executions"></a> [reserved\_concurrent\_executions](#input\_reserved\_concurrent\_executions) | Amount of reserved concurrent executions for this lambda function. <br>  A value of 0 disables lambda from being triggered and -1 removes any concurrency limitations. | `number` | `-1` | no |
 | <a name="input_resource_name_suffix"></a> [resource\_name\_suffix](#input\_resource\_name\_suffix) | Alphanumeric suffix for all the resource names in this module. | `string` | `""` | no |
 | <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | A map of tags to assign to the resources in this module. | `map(string)` | `{}` | no |
-| <a name="input_runtime"></a> [runtime](#input\_runtime) | Identifier of the function's runtime. See Runtimes for valid values. | `string` | `null` | no |
 | <a name="input_schedule_expression"></a> [schedule\_expression](#input\_schedule\_expression) | The scheduling expression. For example, cron(0 20 * * ? *) or rate(5 minutes). | `string` | `null` | no |
 | <a name="input_timeout"></a> [timeout](#input\_timeout) | Amount of time your Lambda Function has to run in seconds. | `number` | `3` | no |
 | <a name="input_tracing_mode"></a> [tracing\_mode](#input\_tracing\_mode) | Whether to to sample and trace a subset of incoming requests with AWS X-Ray. <br>  Valid values are PassThrough and Active. <br>  If PassThrough, Lambda will only trace the request from an upstream service if it contains a tracing header with "sampled=1". <br>  If Active, Lambda will respect any tracing header it receives from an upstream service. <br>  If no tracing header is received, Lambda will call X-Ray for a tracing decision. | `string` | `null` | no |
