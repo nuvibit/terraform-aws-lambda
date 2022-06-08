@@ -57,7 +57,7 @@ variable "package_source_path" {
 variable "handler" {
   description = "Function entrypoint in your code."
   type        = string
-  default     = ""
+  default     = null
 }
 
 variable "memory_size" {
@@ -187,6 +187,7 @@ variable "tracing_mode" {
     error_message = "Value must be \"PassThrough\" or \"Active\"."
   }
 }
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LAMBDA TRIGGER
 # ---------------------------------------------------------------------------------------------------------------------
