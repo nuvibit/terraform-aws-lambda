@@ -85,10 +85,9 @@ variable "timeout" {
 variable "runtime" {
   description = "Identifier of the function's runtime. See Runtimes for valid values."
   type        = string
-  default     = null
 
   validation {
-    condition = var.runtime == null ? true : contains([
+    condition = contains([
       "nodejs", "nodejs4.3", "nodejs6.10",
       "nodejs8.10", "nodejs10.x", "nodejs12.x",
       "nodejs14.x", "nodejs16.x", "java8", "java8.al2",
