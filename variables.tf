@@ -337,19 +337,24 @@ variable "log_retention_in_days" {
   }
 }
 
-variable "log_kms_key_arn" {
-  description = <<EOT
-The ARN of the KMS Key to use when encrypting log data. 
-Please note, after the AWS KMS CMK is disassociated from the log group, AWS CloudWatch Logs stops encrypting newly ingested data for the log group. 
-All previously ingested data remains encrypted, and AWS CloudWatch Logs requires permissions for the CMK whenever the encrypted data is requested.
-  EOT
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ KMS KEY
+# ---------------------------------------------------------------------------------------------------------------------
+variable "kms_key_arn" {
+  description = "KMS Key to be used to encrypt logs and if enabled, sqs messages. requires enable_encryption to be true."
   type        = string
   default     = null
 
   validation {
-    condition     = var.log_kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.log_kms_key_arn))
+    condition     = var.kms_key_arn == null ? true : can(regex("^arn:aws:kms", var.kms_key_arn))
     error_message = "Value must contain ARN, starting with \"arn:aws:kms\"."
   }
+}
+
+variable "enable_encryption" {
+  description = "If true permissons for kms policies will be attached to the execution role. Requires kms_key_arn to be set."
+  default     = false
+  type        = bool
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
