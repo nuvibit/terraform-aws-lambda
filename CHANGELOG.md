@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.6.1](https://github.com/nuvibit/terraform-aws-lambda/compare/1.6.0...1.6.1) (2022-06-09)
+
+
+### Bug Fixes
+
+* wrong logic for enable_tracing ([#22](https://github.com/nuvibit/terraform-aws-lambda/issues/22)) ([f7db81a](https://github.com/nuvibit/terraform-aws-lambda/commit/f7db81ac07d6915cff91ad5068e29d650cb57da8))
+
 # [1.6.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.5.0...1.6.0) (2022-06-08)
 
 
