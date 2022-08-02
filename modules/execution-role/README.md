@@ -42,7 +42,7 @@ module "execution_role" {
 
 * [`examples/lambda-vpc`][lambda-vpc-test-url]
 
-<!--- BEGIN_TF_DOCS --->
+<!-- BEGIN_TF_DOCS -->
 ## Requirements
 
 | Name | Version |
@@ -105,7 +105,7 @@ No modules.
 | <a name="output_lambda_execution_role_name"></a> [lambda\_execution\_role\_name](#output\_lambda\_execution\_role\_name) | Name of the lambda execution role. |
 | <a name="output_lambda_execution_role_unique_id"></a> [lambda\_execution\_role\_unique\_id](#output\_lambda\_execution\_role\_unique\_id) | Stable and unique string identifying the lambda execution role. |
 
-<!--- END_TF_DOCS --->
+<!-- END_TF_DOCS -->
 
 <!-- AUTHORS -->
 ## Authors
