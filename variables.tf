@@ -207,7 +207,7 @@ variable "trigger_sqs_inbound_sns_topics" {
   default = []
 
   validation {
-    condition = var.trigger_sqs_inbound_sns_topics == [] ? true : alltrue([
+    condition = length(var.trigger_sqs_inbound_sns_topics) == 0 ? true : alltrue([
       for p in var.trigger_sqs_inbound_sns_topics : (can(regex("^arn:aws:sns:", p.sns_arn)))
     ])
     error_message = "Values must contain SNS ARN, starting with \"arn:aws:sns:\"."
@@ -231,7 +231,7 @@ variable "trigger_permissions" {
   default = []
 
   validation {
-    condition = var.trigger_permissions == [] ? true : alltrue([
+    condition = length(var.trigger_permissions) == 0 ? true : alltrue([
       for p in var.trigger_permissions : can(regex(".amazonaws.com$|^\\d{12}$", p.principal)) && can(regex("^arn:aws:|^any$", p.source_arn))
     ])
     error_message = "Values must contain Principals, ending with \".amazonaws.com\" or matching exactly 12 digits and Source ARNs, starting with \"arn:aws\" or matching exactly \"any\"."
@@ -256,7 +256,7 @@ variable "event_patterns" {
   default     = []
 
   validation {
-    condition = var.event_patterns == [] ? true : alltrue([
+    condition = length(var.event_patterns) == 0 ? true : alltrue([
       for pattern in var.event_patterns : (
         can(jsondecode(pattern)) ?
         can(jsondecode(pattern).source) :
@@ -316,7 +316,7 @@ variable "iam_execution_policy_arns" {
   default     = []
 
   validation {
-    condition = var.iam_execution_policy_arns == [] ? true : alltrue([
+    condition = length(var.iam_execution_policy_arns) == 0 ? true : alltrue([
       for arn in var.iam_execution_policy_arns : can(regex("^arn:aws:iam", arn))
     ])
     error_message = "Values must contain ARN, starting with \"arn:aws:iam\"."
