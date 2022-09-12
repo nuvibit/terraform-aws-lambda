@@ -86,18 +86,6 @@ variable "timeout" {
 variable "runtime" {
   description = "Identifier of the function's runtime. See Runtimes for valid values."
   type        = string
-
-  validation {
-    condition = contains([
-      "nodejs12.x", "nodejs14.x", "nodejs16.x",
-      "java8", "java8.al2", "java11",
-      "python3.7", "python3.8", "python3.9",
-      "dotnetcore3.1", "dotnet6",
-      "go1.x", "ruby2.7",
-      "provided", "provided.al2"
-    ], var.runtime)
-    error_message = "Identifier of the function's runtime must be supported by AWS Lambda."
-  }
 }
 
 variable "architecture" {
