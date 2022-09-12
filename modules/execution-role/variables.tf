@@ -47,7 +47,7 @@ variable "iam_execution_role_permissions_boundary_arn" {
 }
 
 variable "iam_execution_role_explicit_trust" {
-  description = "Specifies, if the IAM Execution Role shall trust the only the Lambda provisioned by this module."
+  description = "Specifies whether the IAM execution role should trust only the Lambda provisioned by this module."
   type        = bool
   default     = false
 }
