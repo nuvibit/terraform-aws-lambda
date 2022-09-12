@@ -232,6 +232,7 @@ module "execution_role" {
   iam_execution_role_name                     = var.iam_execution_role_name == null ? local.execution_role_name : var.iam_execution_role_name
   iam_execution_role_path                     = var.iam_execution_role_path
   iam_execution_role_permissions_boundary_arn = var.iam_execution_role_permissions_boundary_arn
+  iam_execution_role_explicit_trust           = var.iam_execution_role_explicit_trust
   iam_execution_policy_arns                   = var.iam_execution_policy_arns
   trigger_sqs_enabled                         = var.trigger_sqs_enabled
   trigger_sqs_arn                             = var.trigger_sqs_enabled == true ? aws_sqs_queue.lambda_trigger[0].arn : ""
