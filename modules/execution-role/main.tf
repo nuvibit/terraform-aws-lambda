@@ -51,21 +51,6 @@ data "aws_iam_policy_document" "lambda" {
     actions = [
       "sts:AssumeRole"
     ]
-    dynamic "condition" {
-      for_each = var.iam_execution_role_explicit_trust == true ? [true] : []
-      content {
-        test     = "ArnEquals"
-        variable = "aws:SourceArn"
-        values = [
-          format(
-            "arn:aws:lambda:%s:%s:function:%s",
-            data.aws_region.current.name,
-            data.aws_caller_identity.current.account_id,
-            var.function_name
-          )
-        ]
-      }
-    }
   }
 }
 
