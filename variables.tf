@@ -296,12 +296,6 @@ variable "iam_execution_role_permissions_boundary_arn" {
   }
 }
 
-variable "iam_execution_role_explicit_trust" {
-  description = "Specifies whether the IAM execution role should trust only the Lambda provisioned by this module."
-  type        = bool
-  default     = false
-}
-
 variable "iam_execution_policy_arns" {
   description = "List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role."
   type        = list(string)
