@@ -241,7 +241,6 @@ module "execution_role" {
   resource_name_suffix                        = var.resource_name_suffix
   enable_tracing                              = var.tracing_mode == null ? false : true
   kms_key_arn                                 = var.kms_key_arn
-  enable_encryption                           = var.enable_encryption
 }
 
 # ---------------------------------------------------------------------------------------------------------------------

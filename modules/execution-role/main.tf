@@ -123,7 +123,7 @@ data "aws_iam_policy_document" "lambda_context" {
   }
 
   dynamic "statement" {
-    for_each = var.enable_encryption == true ? ["enabled"] : []
+    for_each = var.kms_key_arn != null ? ["enabled"] : []
     content {
       sid    = "AllowKmsCmkAccess"
       effect = "Allow"

@@ -93,12 +93,6 @@ variable "enable_tracing" {
   type        = bool
 }
 
-variable "enable_encryption" {
-  description = "If true permissons for kms policies will be attached to the execution role. Requires kms_key_arn."
-  default     = true
-  type        = bool
-}
-
 variable "kms_key_arn" {
   description = "ARN of the kms key used to encrypt logs and sqs messages"
   type        = string
