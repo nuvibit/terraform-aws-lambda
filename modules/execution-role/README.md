@@ -80,13 +80,14 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. | `string` | n/a | yes |
 | <a name="input_create_execution_role"></a> [create\_execution\_role](#input\_create\_execution\_role) | Controls if IAM execution role resources should be created. | `bool` | `true` | no |
+| <a name="input_enable_encryption"></a> [enable\_encryption](#input\_enable\_encryption) | Set to true to add permissions for encryption of logs and sqs messages. Requires kms\_key\_arn to be set. | `bool` | `true` | no |
 | <a name="input_enable_tracing"></a> [enable\_tracing](#input\_enable\_tracing) | If true permissons for aws x ray will be added | `bool` | `true` | no |
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | Unique name for your Lambda Function. | `string` | `""` | no |
 | <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
 | <a name="input_iam_execution_role_external_name"></a> [iam\_execution\_role\_external\_name](#input\_iam\_execution\_role\_external\_name) | Name of an optional external IAM execution role outside this module. If create\_execution\_role is false, this value is required. | `string` | `null` | no |
 | <a name="input_iam_execution_role_path"></a> [iam\_execution\_role\_path](#input\_iam\_execution\_role\_path) | Path of the IAM role. | `string` | `null` | no |
 | <a name="input_iam_execution_role_permissions_boundary_arn"></a> [iam\_execution\_role\_permissions\_boundary\_arn](#input\_iam\_execution\_role\_permissions\_boundary\_arn) | ARN of the policy that is used to set the permissions boundary for the role. | `string` | `null` | no |
-| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | ARN of the kms key used to encrypt logs and sqs messages | `string` | `null` | no |
+| <a name="input_kms_key_arn"></a> [kms\_key\_arn](#input\_kms\_key\_arn) | KMS key ARN used to encrypt logs and sqs messages. requires enable\_encryption to be true. | `string` | `null` | no |
 | <a name="input_lambda_loggroup_name"></a> [lambda\_loggroup\_name](#input\_lambda\_loggroup\_name) | Name of cloudwatch loggroup for lambda logging | `string` | `"*"` | no |
 | <a name="input_resource_name_suffix"></a> [resource\_name\_suffix](#input\_resource\_name\_suffix) | Alphanumeric suffix for all the resource names in this module. | `string` | `""` | no |
 | <a name="input_resource_tags"></a> [resource\_tags](#input\_resource\_tags) | A map of tags to assign to the resources in this module. | `map(string)` | `{}` | no |
