@@ -326,8 +326,14 @@ variable "log_retention_in_days" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ KMS KEY
 # ---------------------------------------------------------------------------------------------------------------------
+variable "enable_encryption" {
+  description = "Set to true to enable encryption of logs and sqs messages. Requires kms_key_arn to be set."
+  default     = false
+  type        = bool
+}
+
 variable "kms_key_arn" {
-  description = "KMS Key to be used to encrypt logs and if enabled, sqs messages."
+  description = "KMS key ARN to be used to encrypt logs and sqs messages. requires enable_encryption to be true."
   type        = string
   default     = null
 

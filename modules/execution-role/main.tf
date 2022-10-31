@@ -92,6 +92,7 @@ data "aws_iam_policy_document" "lambda_context" {
   }
 
   dynamic "statement" {
+    # this conditional test is required in the event that the ARN is not known at the planning stage
     for_each = var.trigger_sqs_enabled == true ? ["enabled"] : []
     content {
       sid    = "AllowTriggerSqs"
@@ -108,7 +109,8 @@ data "aws_iam_policy_document" "lambda_context" {
   }
 
   dynamic "statement" {
-    for_each = var.kms_key_arn != null ? ["enabled"] : []
+    # this conditional test is required in the event that the ARN is not known at the planning stage
+    for_each = var.enable_encryption == true ? ["enabled"] : []
     content {
       sid    = "AllowKmsCmkAccess"
       effect = "Allow"

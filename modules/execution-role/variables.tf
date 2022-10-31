@@ -87,8 +87,14 @@ variable "enable_tracing" {
   type        = bool
 }
 
+variable "enable_encryption" {
+  description = "Set to true to add permissions for encryption of logs and sqs messages. Requires kms_key_arn to be set."
+  default     = true
+  type        = bool
+}
+
 variable "kms_key_arn" {
-  description = "ARN of the kms key used to encrypt logs and sqs messages"
+  description = "KMS key ARN used to encrypt logs and sqs messages. requires enable_encryption to be true."
   type        = string
   default     = null
 
