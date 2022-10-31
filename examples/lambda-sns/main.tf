@@ -233,6 +233,7 @@ module "lambda" {
   memory_size          = 128
   timeout              = 360
   runtime              = "python3.9"
+  enable_encryption    = true
   kms_key_arn          = aws_kms_key.example.arn
   resource_tags        = var.resource_tags
   resource_name_suffix = random_string.suffix.result
