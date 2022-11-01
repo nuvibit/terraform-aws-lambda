@@ -80,7 +80,7 @@ No modules.
 |------|-------------|------|---------|:--------:|
 | <a name="input_iam_execution_role_name"></a> [iam\_execution\_role\_name](#input\_iam\_execution\_role\_name) | Friendly name of the lambda execution role. | `string` | n/a | yes |
 | <a name="input_create_execution_role"></a> [create\_execution\_role](#input\_create\_execution\_role) | Controls if IAM execution role resources should be created. | `bool` | `true` | no |
-| <a name="input_enable_encryption"></a> [enable\_encryption](#input\_enable\_encryption) | Set to true to add permissions for encryption of logs and sqs messages. Requires kms\_key\_arn to be set. | `bool` | `true` | no |
+| <a name="input_enable_encryption"></a> [enable\_encryption](#input\_enable\_encryption) | This variable is a required workaround to avoid issues with terraform plan when the external provided kms\_key\_arn is not known at plan.<br>  Set to true to add permissions for encryption of logs and sqs messages. Requires kms\_key\_arn to be set. | `bool` | `true` | no |
 | <a name="input_enable_tracing"></a> [enable\_tracing](#input\_enable\_tracing) | If true permissons for aws x ray will be added | `bool` | `true` | no |
 | <a name="input_function_name"></a> [function\_name](#input\_function\_name) | Unique name for your Lambda Function. | `string` | `""` | no |
 | <a name="input_iam_execution_policy_arns"></a> [iam\_execution\_policy\_arns](#input\_iam\_execution\_policy\_arns) | List of optional additional execution policy statement ARNs outside this module to attach to IAM Lambda execution role. | `list(string)` | `[]` | no |
