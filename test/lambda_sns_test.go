@@ -20,11 +20,11 @@ func TestLambdaSNS(t *testing.T) {
 		},
 	}
 
+	defer terraform.Destroy(t, terraformOptions)
 	terraform.InitAndApply(t, terraformOptions)
 
 	// Do testing. I.E check if your ressources are deployed via AWS GO SDK
 
-	defer terraform.Destroy(t, terraformOptions)
 
 	lambdaArn := terraform.Output(t, terraformOptions, "lambda_arn")
 	if strings.Contains(lambdaArn, "test_lambda") {

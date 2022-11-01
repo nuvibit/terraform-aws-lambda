@@ -32,14 +32,14 @@ locals {
 
   trigger_sqs_name = format(
     "%s-trigger%s",
-    lower(var.function_name),
-    lower(local.suffix_k)
+    var.function_name,
+    local.suffix_k
   )
 
   lambda_name = format(
     "%s%s",
-    lower(var.function_name),
-    lower(local.suffix_k)
+    var.function_name,
+    local.suffix_k
   )
 
   execution_role_name = format(
@@ -50,14 +50,14 @@ locals {
 
   loggroup_name = format(
     "/aws/lambda/%s%s",
-    lower(var.function_name),
-    lower(local.suffix_k)
+    var.function_name,
+    local.suffix_k
   )
 
   event_schedule_name = format(
     "%s-schedule%s",
-    lower(var.function_name),
-    lower(local.suffix_k)
+    var.function_name,
+    local.suffix_k
   )
 }
 
@@ -239,8 +239,8 @@ module "execution_role" {
   resource_tags                               = var.resource_tags
   resource_name_suffix                        = var.resource_name_suffix
   enable_tracing                              = var.tracing_mode == null ? false : true
-  kms_key_arn                                 = var.kms_key_arn
   enable_encryption                           = var.enable_encryption
+  kms_key_arn                                 = var.kms_key_arn
 }
 
 # ---------------------------------------------------------------------------------------------------------------------
