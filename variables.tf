@@ -327,7 +327,11 @@ variable "log_retention_in_days" {
 # ¦ KMS KEY
 # ---------------------------------------------------------------------------------------------------------------------
 variable "enable_encryption" {
-  description = "Set to true to enable encryption of logs and sqs messages. Requires kms_key_arn to be set."
+  description = <<EOT
+  Actually a redundancy to kms_key_arn == null. 
+  But required to cope with terraform plan issues when an external provided KMS CMK is created
+  Set to true to enable encryption of logs and sqs messages. Requires kms_key_arn to be set.
+  EOT
   default     = false
   type        = bool
 }
