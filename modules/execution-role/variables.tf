@@ -87,8 +87,14 @@ variable "enable_tracing" {
   type        = bool
 }
 
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ KMS KEY
+# ---------------------------------------------------------------------------------------------------------------------
 variable "enable_encryption" {
-  description = "Set to true to add permissions for encryption of logs and sqs messages. Requires kms_key_arn to be set."
+  description = <<EOT
+  This variable is a required workaround to avoid issues with terraform plan when the external provided kms_key_arn is not known at plan.
+  Set to true to add permissions for encryption of logs and sqs messages. Requires kms_key_arn to be set.
+  EOT
   default     = true
   type        = bool
 }
