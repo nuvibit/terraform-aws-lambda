@@ -56,8 +56,8 @@ data "aws_region" "current" {}
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  execution_policy_name = format(
-    "%s_execution_policy-%s",
+  execution_role_name = format(
+    "%s_execution_role-%s",
     var.function_name,
     random_string.suffix.result,
   )
@@ -87,19 +87,41 @@ resource "random_string" "suffix" {
 
 
 # ---------------------------------------------------------------------------------------------------------------------
-# ¦ LAMBDA EXECUTION POLICIES
+# ¦ LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
-resource "aws_iam_policy" "list_users" {
-  name   = local.execution_policy_name
-  policy = data.aws_iam_policy_document.list_users.json
+resource "aws_iam_role" "lambda_execution_role" {
+  name                 = local.execution_role_name
+  assume_role_policy   = data.aws_iam_policy_document.lambda_execution_role_trust.json
+  tags                 = local.resource_tags
 }
 
-data "aws_iam_policy_document" "list_users" {
-  # enable IAM in logging account
+data "aws_iam_policy_document" "lambda_execution_role_trust" {
   statement {
-    sid       = "EnableOrganization"
-    effect    = "Allow"
-    actions   = ["iam:ListUsers"]
+    sid    = "TrustPolicy"
+    effect = "Allow"
+    principals {
+      type        = "Service"
+      identifiers = ["lambda.amazonaws.com"]
+    }
+    actions = [
+      "sts:AssumeRole"
+    ]
+  }
+}
+
+resource "aws_iam_role_policy" "lambda_execution_policy" {
+  name   = replace(aws_iam_role.lambda_execution_role.name, "role", "policy")
+  role   = aws_iam_role.lambda_execution_role.name
+  policy = data.aws_iam_policy_document.lambda_execution_policy.json
+}
+
+data "aws_iam_policy_document" "lambda_execution_policy" {
+  statement {
+    sid    = "AllowAssumeRole"
+    effect = "Allow"
+    actions = [
+      "sts:AssumeRole"
+    ]
     resources = ["*"]
   }
 }
@@ -116,11 +138,8 @@ module "lambda_euc1" {
   description         = var.description
   package_source_path = "${path.module}/lambda_files"
   handler             = "main.lambda_handler"
-  trigger_sqs_enabled = true
-  iam_execution_role_path = "/lambda/"
-  iam_execution_policy_arns = [
-    aws_iam_policy.list_users.arn
-  ]
+  create_execution_role            = false
+  iam_execution_role_external_name = aws_iam_role.lambda_execution_role.name
   environment_variables = {
     ACCOUNT_ID = data.aws_caller_identity.current.account_id
   }
@@ -148,9 +167,8 @@ module "lambda_euw1" {
   description                      = var.description
   package_source_path              = "${path.module}/lambda_files"
   handler                          = "main.lambda_handler"
-  trigger_sqs_enabled              = true
   create_execution_role            = false
-  iam_execution_role_external_name = module.lambda_euc1.lambda_execution_role_name
+  iam_execution_role_external_name = aws_iam_role.lambda_execution_role.name
 
   environment_variables = {
     ACCOUNT_ID = data.aws_caller_identity.current.account_id
@@ -180,9 +198,8 @@ module "lambda_use1" {
   description                      = var.description
   package_source_path              = "${path.module}/lambda_files"
   handler                          = "main.lambda_handler"
-  trigger_sqs_enabled              = true
   create_execution_role            = false
-  iam_execution_role_external_name = module.lambda_euc1.lambda_execution_role_name
+  iam_execution_role_external_name = aws_iam_role.lambda_execution_role.name
 
   environment_variables = {
     ACCOUNT_ID = data.aws_caller_identity.current.account_id
