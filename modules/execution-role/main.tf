@@ -86,7 +86,7 @@ resource "aws_iam_role_policy" "lambda_context" {
 }
 
 data "aws_iam_policy_document" "lambda_context" {
-  count = var.kms_key_arn != null and var.enable_encryption == true or var.enable_encryption == false ? 1 : 0
+  count = (var.kms_key_arn != null && var.enable_encryption == true) || var.enable_encryption == false ? 1 : 0
 
   statement {
     sid    = "LogToCloudWatch"
