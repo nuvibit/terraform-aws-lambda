@@ -93,7 +93,7 @@ resource "aws_iam_role" "lambda_execution_role" {
   name               = local.execution_role_name
   assume_role_policy = data.aws_iam_policy_document.lambda_execution_role_trust.json
   tags               = var.resource_tags
-  provider= aws.euc1
+  provider           = aws.euc1
 }
 
 data "aws_iam_policy_document" "lambda_execution_role_trust" {
@@ -111,10 +111,10 @@ data "aws_iam_policy_document" "lambda_execution_role_trust" {
 }
 
 resource "aws_iam_role_policy" "lambda_execution_policy" {
-  name   = replace(aws_iam_role.lambda_execution_role.name, "role", "policy")
-  role   = aws_iam_role.lambda_execution_role.name
-  policy = data.aws_iam_policy_document.lambda_execution_policy.json
-  provider= aws.euc1
+  name     = replace(aws_iam_role.lambda_execution_role.name, "role", "policy")
+  role     = aws_iam_role.lambda_execution_role.name
+  policy   = data.aws_iam_policy_document.lambda_execution_policy.json
+  provider = aws.euc1
 }
 
 #tfsec:ignore:AVD-AWS-0057
