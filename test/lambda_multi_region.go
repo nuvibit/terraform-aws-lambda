@@ -8,7 +8,7 @@ import (
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
 
-func TestLambda(t *testing.T) {
+func TestLambdaMultiRegion(t *testing.T) {
 	// retryable errors in terraform testing.
 	t.Log("Starting lambda module test")
 
