@@ -90,9 +90,9 @@ resource "random_string" "suffix" {
 # ¦ LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
 resource "aws_iam_role" "lambda_execution_role" {
-  name                 = local.execution_role_name
-  assume_role_policy   = data.aws_iam_policy_document.lambda_execution_role_trust.json
-  tags                 = local.resource_tags
+  name               = local.execution_role_name
+  assume_role_policy = data.aws_iam_policy_document.lambda_execution_role_trust.json
+  tags               = local.resource_tags
 }
 
 data "aws_iam_policy_document" "lambda_execution_role_trust" {
@@ -135,10 +135,10 @@ module "lambda_euc1" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name       = var.function_name
-  description         = var.description
-  package_source_path = "${path.module}/lambda_files"
-  handler             = "main.lambda_handler"
+  function_name                    = var.function_name
+  description                      = var.description
+  package_source_path              = "${path.module}/lambda_files"
+  handler                          = "main.lambda_handler"
   create_execution_role            = false
   iam_execution_role_external_name = aws_iam_role.lambda_execution_role.name
   environment_variables = {
