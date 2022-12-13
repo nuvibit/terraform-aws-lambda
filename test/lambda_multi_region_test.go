@@ -26,9 +26,6 @@ func TestLambdaMultiRegion(t *testing.T) {
 
 	// Do testing. I.E check if your ressources are deployed via AWS GO SDK
     
-	time.Sleep(60 * time.Second)
-
-
 	lambda_euc1_Arn := terraform.Output(t, terraformOptions, "lambda_euc1_arn")
 	if strings.Contains(lambda_euc1_Arn, "test_lambda_multi_region") {
 		t.Log("PASSED: lambda_arn contains \"test_lambda_multi_region\"")
