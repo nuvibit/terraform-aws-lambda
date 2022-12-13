@@ -67,8 +67,20 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LAMBDA LOGGING - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ RANDOM SUFFIX
+# ---------------------------------------------------------------------------------------------------------------------
+resource "random_string" "suffix" {
+  length  = 5
+  number  = true
+  lower   = true
+  upper   = true
+  special = false
+}
+
 resource "aws_iam_role_policy" "lambda_context" {
-  name   = var.create_execution_role == true ? "AllowLambdaContext" : format("AllowLambdaContextFor%s", replace(title(replace(replace(var.function_name, "-", " "), "_", " ")), " ", ""))
+  name   = var.create_execution_role == true ? "AllowLambdaContext" : format("AllowLambdaContextFor%s-%s", replace(title(replace(replace(var.function_name, "-", " "), "_", " ")), " ", ""), random_string.suffix.value)
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.lambda_context.json
 }
