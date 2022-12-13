@@ -17,7 +17,7 @@ func TestLambdaMultiRegion(t *testing.T) {
 		NoColor:      false,
 		Lock:         true,
 		Vars: map[string]interface{}{
-			"function_name": "test_lambda",
+			"function_name": "test_lambda_multi_region",
 		},
 	}
 
