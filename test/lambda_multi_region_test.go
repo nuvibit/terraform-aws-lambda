@@ -29,11 +29,26 @@ func TestLambdaMultiRegion(t *testing.T) {
 	time.Sleep(60 * time.Second)
 
 
-	lambda_Arn := terraform.Output(t, terraformOptions, "lambda_arn")
-	if strings.Contains(lambda_Arn, "test_lambda_multi_region") {
+	lambda_euc1_Arn := terraform.Output(t, terraformOptions, "lambda_euc1_arn")
+	if strings.Contains(lambda_euc1_Arn, "test_lambda_multi_region") {
 		t.Log("PASSED: lambda_arn contains \"test_lambda_multi_region\"")
 	} else {
 		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda_multi_region\"")
 	}
+
+	lambda_euw1_Arn := terraform.Output(t, terraformOptions, "lambda_euw1_arn")
+	if strings.Contains(lambda_euw1_Arn, "test_lambda_multi_region") {
+		t.Log("PASSED: lambda_arn contains \"test_lambda_multi_region\"")
+	} else {
+		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda_multi_region\"")
+	}
+
+	lambda_use1_Arn := terraform.Output(t, terraformOptions, "lambda_use1_arn")
+	if strings.Contains(lambda_use1_Arn, "test_lambda_multi_region") {
+		t.Log("PASSED: lambda_arn contains \"test_lambda_multi_region\"")
+	} else {
+		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda_multi_region\"")
+	}
+
 
 }
