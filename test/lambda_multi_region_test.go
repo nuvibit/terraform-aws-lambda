@@ -3,7 +3,6 @@ package test
 import (
 	"strings"
 	"testing"
-	"time"
 
 	"github.com/gruntwork-io/terratest/modules/terraform"
 )
