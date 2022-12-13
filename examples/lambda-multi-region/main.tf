@@ -92,7 +92,7 @@ resource "random_string" "suffix" {
 resource "aws_iam_role" "lambda_execution_role" {
   name               = local.execution_role_name
   assume_role_policy = data.aws_iam_policy_document.lambda_execution_role_trust.json
-  tags               = local.resource_tags
+  tags               = var.resource_tags
 }
 
 data "aws_iam_policy_document" "lambda_execution_role_trust" {
