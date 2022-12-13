@@ -112,11 +112,11 @@ module "lambda_euc1" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name       = var.function_name
-  description         = var.description
-  package_source_path = "${path.module}/lambda_files"
-  handler             = "main.lambda_handler"
-  trigger_sqs_enabled = true
+  function_name           = var.function_name
+  description             = var.description
+  package_source_path     = "${path.module}/lambda_files"
+  handler                 = "main.lambda_handler"
+  trigger_sqs_enabled     = true
   iam_execution_role_path = "/lambda/"
   iam_execution_policy_arns = [
     aws_iam_policy.list_users.arn
