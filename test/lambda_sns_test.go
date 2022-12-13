@@ -9,14 +9,14 @@ import (
 
 func TestLambdaSNS(t *testing.T) {
 	// retryable errors in terraform testing.
-	t.Log("Starting lambda module test")
+	t.Log("Starting lambda module SNS test")
 
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../examples/lambda-sns",
 		NoColor:      false,
 		Lock:         true,
 		Vars: map[string]interface{}{
-			"function_name": "test_lambda",
+			"function_name": "test_lambda_sns",
 		},
 	}
 
@@ -27,9 +27,9 @@ func TestLambdaSNS(t *testing.T) {
 
 
 	lambdaArn := terraform.Output(t, terraformOptions, "lambda_arn")
-	if strings.Contains(lambdaArn, "test_lambda") {
-		t.Log("PASSED: lambda_arn contains \"test_lambda\"")
+	if strings.Contains(lambdaArn, "test_lambda_sns") {
+		t.Log("PASSED: lambda_arn contains \"test_lambda_sns\"")
 	} else {
-		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda\"")
+		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda_sns\"")
 	}
 }

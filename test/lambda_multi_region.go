@@ -10,7 +10,7 @@ import (
 
 func TestLambdaMultiRegion(t *testing.T) {
 	// retryable errors in terraform testing.
-	t.Log("Starting lambda module test")
+	t.Log("Starting lambda module multi-region test")
 
 	terraformOptions := &terraform.Options{
 		TerraformDir: "../examples/lambda-multi-region",
@@ -30,10 +30,10 @@ func TestLambdaMultiRegion(t *testing.T) {
 
 
 	lambda_Arn := terraform.Output(t, terraformOptions, "lambda_arn")
-	if strings.Contains(lambda_Arn, "test_lambda") {
-		t.Log("PASSED: lambda_arn contains \"test_lambda\"")
+	if strings.Contains(lambda_Arn, "test_lambda_multi_region") {
+		t.Log("PASSED: lambda_arn contains \"test_lambda_multi_region\"")
 	} else {
-		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda\"")
+		t.Errorf("FAILED: expected lambda_arn to contain \"test_lambda_multi_region\"")
 	}
 
 }
