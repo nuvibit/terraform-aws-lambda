@@ -67,7 +67,7 @@ locals {
 # ---------------------------------------------------------------------------------------------------------------------
 resource "random_string" "suffix" {
   length  = 16
-  number  = true
+  numeric = true
   lower   = true
   upper   = true
   special = false
