@@ -123,7 +123,7 @@ module "lambda_euc1" {
       "filter_policy_json" = "{\"autoRemediation\": [true]}"
     }
   ]
-  iam_execution_role_path                = "/lambda/"
+  iam_execution_role_path = "/lambda/"
   iam_execution_policy_arns = [
     aws_iam_policy.list_users.arn
   ]
@@ -150,10 +150,10 @@ module "lambda_euw1" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name       = var.function_name
-  description         = var.description
-  package_source_path = "${path.module}/lambda_files"
-  handler             = "main.lambda_handler"
+  function_name                    = var.function_name
+  description                      = var.description
+  package_source_path              = "${path.module}/lambda_files"
+  handler                          = "main.lambda_handler"
   create_execution_role            = false
   iam_execution_role_external_name = module.lambda_euc1.lambda_execution_role_name
 
@@ -181,10 +181,10 @@ module "lambda_use1" {
   # version = "~> 1.0"
   source = "../../"
 
-  function_name       = var.function_name
-  description         = var.description
-  package_source_path = "${path.module}/lambda_files"
-  handler             = "main.lambda_handler"
+  function_name                    = var.function_name
+  description                      = var.description
+  package_source_path              = "${path.module}/lambda_files"
+  handler                          = "main.lambda_handler"
   create_execution_role            = false
   iam_execution_role_external_name = module.lambda_euc1.lambda_execution_role_name
 
