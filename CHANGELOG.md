@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+# [1.7.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.6.2...1.7.0) (2022-12-14)
+
+
+### Features
+
+* add multi-region support for inline policies ([#27](https://github.com/nuvibit/terraform-aws-lambda/issues/27)) ([17f7f3c](https://github.com/nuvibit/terraform-aws-lambda/commit/17f7f3c98ece529a9541fad7025ca7f417cc3640))
+
 ## [1.6.2](https://github.com/nuvibit/terraform-aws-lambda/compare/1.6.1...1.6.2) (2022-11-01)
 
 
