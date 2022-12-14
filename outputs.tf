@@ -60,12 +60,14 @@ output "lambda_schedule_cloudwatch_event_rule_arn" {
 
 output "lambda_pattern_cloudwatch_event_rule_ids" {
   description = "The name of the lambda pattern rule."
-  value       = var.event_patterns != [] ? [for k, v in aws_cloudwatch_event_rule.pattern : v.id] : []
+  # tflint-ignore: terraform_empty_list_equality
+  value = var.event_patterns != [] ? [for k, v in aws_cloudwatch_event_rule.pattern : v.id] : []
 }
 
 output "lambda_pattern_cloudwatch_event_rule_arns" {
   description = "The Amazon Resource Name (ARN) of the lambda pattern rule."
-  value       = var.event_patterns != [] ? [for k, v in aws_cloudwatch_event_rule.pattern : v.arn] : []
+  # tflint-ignore: terraform_empty_list_equality
+  value = var.event_patterns != [] ? [for k, v in aws_cloudwatch_event_rule.pattern : v.arn] : []
 }
 
 output "trigger_sqs_arn" {
