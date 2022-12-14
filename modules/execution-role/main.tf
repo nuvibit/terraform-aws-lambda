@@ -24,6 +24,16 @@ data "aws_iam_role" "external_execution" {
   name  = var.iam_execution_role_external_name
 }
 
+
+# ---------------------------------------------------------------------------------------------------------------------
+# ¦ LOCALS
+# ---------------------------------------------------------------------------------------------------------------------
+locals {
+  region_name_splitted = split("-", dat.aws_region.current.name)
+  region_name_short = "${local.region_name_splitted[0]}${substr(local.region_name_splitted[1], 0, 1)}${local.region_name_splitted[2]}"
+}
+
+
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ IAM LAMBDA EXECUTION ROLE
 # ---------------------------------------------------------------------------------------------------------------------
@@ -67,20 +77,8 @@ resource "aws_iam_role_policy_attachment" "lambda" {
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LAMBDA LOGGING - IAM POLICY
 # ---------------------------------------------------------------------------------------------------------------------
-
-# ---------------------------------------------------------------------------------------------------------------------
-# ¦ RANDOM SUFFIX
-# ---------------------------------------------------------------------------------------------------------------------
-resource "random_string" "suffix" {
-  length  = 5
-  numeric = true
-  lower   = true
-  upper   = false
-  special = false
-}
-
 resource "aws_iam_role_policy" "lambda_context" {
-  name   = var.create_execution_role == true ? "AllowLambdaContext" : format("AllowLambdaContextFor%s-%s", replace(title(replace(replace(var.function_name, "-", " "), "_", " ")), " ", ""), random_string.suffix.result)
+  name   = var.create_execution_role == true ? "AllowLambdaContext" : format("AllowLambdaContextFor%s-%s", replace(title(replace(replace(var.function_name, "-", " "), "_", " ")), " ", ""), local.region_name_short)
   role   = var.create_execution_role ? aws_iam_role.lambda[0].name : data.aws_iam_role.external_execution[0].name
   policy = data.aws_iam_policy_document.lambda_context.json
 }
