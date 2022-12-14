@@ -29,7 +29,7 @@ data "aws_iam_role" "external_execution" {
 # ¦ LOCALS
 # ---------------------------------------------------------------------------------------------------------------------
 locals {
-  region_name_splitted = split("-", dat.aws_region.current.name)
+  region_name_splitted = split("-", data.aws_region.current.name)
   region_name_short = "${local.region_name_splitted[0]}${substr(local.region_name_splitted[1], 0, 1)}${local.region_name_splitted[2]}"
 }
 
