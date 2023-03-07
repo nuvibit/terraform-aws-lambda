@@ -22,6 +22,7 @@ terraform {
 # ¦ DATA
 # ---------------------------------------------------------------------------------------------------------------------
 data "aws_caller_identity" "current" {}
+data "aws_region" "current" {}
 
 # ---------------------------------------------------------------------------------------------------------------------
 # ¦ LOCALS
@@ -29,6 +30,9 @@ data "aws_caller_identity" "current" {}
 locals {
   suffix   = title(var.resource_name_suffix)
   suffix_k = local.suffix == "" ? "" : format("-%s", local.suffix)
+
+  region_name_splitted = split("-", data.aws_region.current.name)
+  region_name_short    = "${local.region_name_splitted[0]}${substr(local.region_name_splitted[1], 0, 1)}${local.region_name_splitted[2]}"
 
   trigger_sqs_name = format(
     "%s-trigger%s",
@@ -142,7 +146,7 @@ data "archive_file" "lambda_package" {
 
   type        = "zip"
   source_dir  = var.package_source_path
-  output_path = "${path.module}/zipped_package.zip"
+  output_path = "${path.module}/${local.region_name_short}_zipped_package.zip"
 }
 
 resource "aws_lambda_function" "this" {
