@@ -2,6 +2,13 @@
 
 All notable changes to this project will be documented in this file.
 
+## [1.7.1](https://github.com/nuvibit/terraform-aws-lambda/compare/1.7.0...1.7.1) (2023-03-07)
+
+
+### Bug Fixes
+
+* issue with archive_file and state in multi-region scenario ([#28](https://github.com/nuvibit/terraform-aws-lambda/issues/28)) ([e909edc](https://github.com/nuvibit/terraform-aws-lambda/commit/e909edc467e1539e99b9820900e062a5ace7bb35))
+
 # [1.7.0](https://github.com/nuvibit/terraform-aws-lambda/compare/1.6.2...1.7.0) (2022-12-14)
 
 
